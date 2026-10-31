@@ -25,7 +25,7 @@ describe('páginas', () => {
     const html = await r.text();
     expect(html).toContain('data-team="gremio"');
     expect(html).toContain('<title>O Grêmio cai?</title>');
-    expect(html).toContain('<meta property="og:title" content="O Grêmio cai?">');
+    expect(html).toMatch(/<meta property="og:title" content="O Grêmio cai\?"/);
     expect(html).toContain('href="/gremio.svg"');
   });
 

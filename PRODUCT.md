@@ -31,13 +31,13 @@ A resposta vem em um veredito binário e provocador (SIM/NÃO) baseado na tabela
 
 ## Capabilities and Constraints
 
-- Cloudflare Worker (`src/index.js`) serve a página e faz proxy da football-data.org (competição `BSA`). O token fica como secret e o cache em KV dura 1 hora. Sem o token, o site usa dados de demonstração (`src/demo.js`).
-- Front-end em JS puro (`public/app.js`, `public/index.html`), sem framework.
+- Cloudflare Worker (`src/worker/`) serve a página e faz proxy da football-data.org (competição `BSA`). O token fica como secret e o cache em KV dura 1 hora. Sem o token, o site usa dados de demonstração (`src/worker/demo.ts`).
+- Front-end em Preact + TypeScript, componentizado (`src/client/`), com build pelo Vite. A lógica de tabela, simulação e veredito fica em `src/domain/`, separada da interface e testada.
 - Banner: SIM se o time está no Z4 (17º–20º) da tabela exibida (real ou simulada), NÃO se está fora. Abaixo, menor: % de queda e posição.
 - Simulador: Monte Carlo (5000 rodadas) com força de ataque e defesa tirada dos gols do campeonato, mais mando de campo e placares por Poisson. Calcula a % de queda de todos os times.
 - Palpites: botões V/E/D que preenchem um placar padrão (1x0, 1x1, 0x1) e campos de placar exato editáveis, salvos em localStorage e compartilhados entre as páginas dos times. Quando há palpites, aparece o selo "MODO SIMULAÇÃO" e um botão para voltar ao real.
 - Jogos navegáveis por rodada (os passados com placar, os futuros com palpite). Não há histórico da classificação por rodada.
-- Os times são identificados pelo id da API, nunca pela sigla (Coritiba e Corinthians são ambos COR; o Grêmio é FBP). A lista de times existe em dois lugares: `TEAMS` em `public/app.js` e em `src/index.js`.
+- Os times são identificados pelo id da API, nunca pela sigla (Coritiba e Corinthians são ambos COR; o Grêmio é FBP). A lista de times é única, em `src/shared/teams.ts`, usada pelo Worker e pela página.
 - Vida útil: só a temporada 2026. Projeto pontual que termina com o campeonato, sem planos de virar produto recorrente.
 
 ## Brand Commitments

@@ -9,6 +9,10 @@ export default defineConfig({
   testMatch: '*.spec.ts',
   snapshotPathTemplate: 'tests/visual/__baseline__/{arg}{ext}',
   fullyParallel: true,
+  // o workerd do preview às vezes derruba conexões com muitas abas ao mesmo tempo; uma regressão visual
+  // real falha nas duas tentativas
+  workers: 4,
+  retries: 1,
   reporter: [['list'], ['html', { open: 'never' }]],
   use: {
     baseURL: process.env.BASE_URL ?? 'http://localhost:8787',

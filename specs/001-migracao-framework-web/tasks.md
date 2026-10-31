@@ -257,29 +257,29 @@ Projeto único na raiz: `src/shared`, `src/domain`, `src/worker`, `src/client`, 
 
 **Independent Test**: `npx vitest run --project domain` verde, cobrindo classificação, desempate, palpites, veredito e simulação com semente fixa.
 
-- [ ] T065 [P] [US3] `tests/domain/standings.test.ts`:
+- [X] T065 [P] [US3] `tests/domain/standings.test.ts`:
   - **`play`**: vitória, empate e derrota atualizam `pts/j/v/e/d/gp/gc/sg`.
   - **`compareStandings`**: desempata na ordem "pontos ↓, vitórias ↓, saldo ↓, gols pró ↓, nome (localeCompare) ↑", com um caso para cada critério.
-- [ ] T066 [P] [US3] `tests/domain/prepare.test.ts`: mapeamento de status, incluindo FINISHED sem placar → `fut` e status desconhecido descartado; jogo com time sem id descartado; `current` ignora rodada antiga com jogo adiado; `gid` por id e, na falta, por `code` (Coritiba demo 90002 vs `TEAMS.coritiba.id` 4241); `lambda` > 0.
-- [ ] T067 [P] [US3] `tests/domain/simulate.test.ts`:
+- [X] T066 [P] [US3] `tests/domain/prepare.test.ts`: mapeamento de status, incluindo FINISHED sem placar → `fut` e status desconhecido descartado; jogo com time sem id descartado; `current` ignora rodada antiga com jogo adiado; `gid` por id e, na falta, por `code` (Coritiba demo 90002 vs `TEAMS.coritiba.id` 4241); `lambda` > 0.
+- [X] T067 [P] [US3] `tests/domain/simulate.test.ts`:
   - **Determinismo**: a mesma entrada com `mulberry(42)` dá resultado idêntico duas vezes.
   - **Fim do campeonato**: sem jogos restantes, `pct ∈ {0,1}` e `dec` sai da posição.
   - **`salvo`**: o caso em que menos de 4 times conseguem alcançar.
   - **`reb`**: o caso em que 4 ou mais times já passaram do máximo possível.
   - **Palpites**: só valem em jogos `fut`; em jogo `fin` são ignorados.
-- [ ] T068 [P] [US3] `tests/domain/verdict.test.ts` e `format.test.ts`:
+- [X] T068 [P] [US3] `tests/domain/verdict.test.ts` e `format.test.ts`:
   - **Veredito**: 17º → SIM, 16º → NÃO; textos de gap no singular e no plural e os casos de desempate; selos.
   - **`pctLabel`**: os 6 casos.
   - **Outros formatos**: `signed`, com o sinal `−`; `roundRange` no mesmo dia, mesmo mês e entre meses; `timeAgo`.
   - **`homeCards`**: ordenação.
-- [ ] T069 [P] [US3] `tests/domain/predictions.test.ts`:
+- [X] T069 [P] [US3] `tests/domain/predictions.test.ts`:
   - **`pick`**: V/E/D dão os placares padrão.
   - **`step`**: limita entre 0 e 9 e remove `auto`.
   - **`setValue`**: usa o último dígito, e vazio vira 0.
   - **`fill`** (com rng fixo): mantém palpite manual, refaz `auto` e preenche os vazios; ignora jogos não `fut`.
   - **Funções puras**: nenhuma muta a entrada.
   - **Contagem**: `missingIn` e `incompleteRounds`.
-- [ ] T070 [P] [US3] `tests/domain/storage.test.ts` (testa `src/client/lib/storage.ts` com `localStorage` falso) e `tests/worker/demo.test.ts`.
+- [X] T070 [P] [US3] `tests/domain/storage.test.ts` (testa `src/client/lib/storage.ts` com `localStorage` falso) e `tests/worker/demo.test.ts`.
   - **storage.test.ts**:
     - JSON inválido → `{}`.
     - Entrada com `h: 12` ou `"a": "x"` → descartada, e as outras ficam.
@@ -293,9 +293,9 @@ Projeto único na raiz: `src/shared`, `src/domain`, `src/worker`, `src/client`, 
 
 ## Phase 6: Polish & publicação
 
-- [ ] T071 Conferir que não sobrou nada da versão antiga (`public/` só com os 9 SVGs; `src/` só com `shared`, `domain`, `worker` e `client`). Rodar `npm run check` e `npm run test:visual`, que precisam passar sem erro. **Portão da publicação.**
+- [X] T071 Conferir que não sobrou nada da versão antiga (`public/` só com os 9 SVGs; `src/` só com `shared`, `domain`, `worker` e `client`). Rodar `npm run check` e `npm run test:visual`, que precisam passar sem erro. **Portão da publicação.**
 - [X] T072 [P] Medir o bundle (`npm run build`, tamanho gzip de `dist/client/assets/*.js`). A meta é ≤ ~25 KB. Anotar em `checklists/parity.md`.
-- [ ] T073 [P] Atualizar `PRODUCT.md` → "Capabilities and Constraints":
+- [X] T073 [P] Atualizar `PRODUCT.md` → "Capabilities and Constraints":
   - "Front-end em JS puro" passa a "Preact + TypeScript, componentizado (`src/client`)".
   - A frase sobre a lista de times em dois lugares passa a "lista única em `src/shared/teams.ts`".
   - Os caminhos `src/index.js`/`src/demo.js` passam a `src/worker/`.
