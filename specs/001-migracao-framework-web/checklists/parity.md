@@ -24,3 +24,8 @@ Automatizadas com Playwright, rodando a versão antiga (porta 8788) e a nova (87
 
 - [x] JS do cliente: 49,3 KB, **19,3 KB gzip** (meta ≤ ~25 KB). CSS: 21,0 KB, 5,4 KB gzip. Worker: 7,0 KB, 3,0 KB gzip.
 - A versão antiga carregava `app.js` (26 KB) + Preact/htm do unpkg (terceiro). A nova não depende mais de CDN externo.
+
+## Publicação (T074)
+
+- [x] Versão `cae6f73a` enviada sem tráfego (`wrangler versions upload`). No preview, com os **dados reais** de 30/10/2026 servidos igualmente às duas versões, as 10 páginas tiveram o texto idêntico ao da produção antiga (vereditos, %, tabelas, jogos), sem erro no console.
+- [x] Promovida para 100% (`wrangler versions deploy`). `vaicair.diuliano.com` serve o build novo, `/api/data` traz dados reais, e `o-inter-cai`/`o-gremio-cai` redirecionam com 301. Para voltar atrás: `npx wrangler rollback`.

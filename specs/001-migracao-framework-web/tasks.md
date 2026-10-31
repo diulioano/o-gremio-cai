@@ -299,14 +299,14 @@ Projeto único na raiz: `src/shared`, `src/domain`, `src/worker`, `src/client`, 
   - "Front-end em JS puro" passa a "Preact + TypeScript, componentizado (`src/client`)".
   - A frase sobre a lista de times em dois lugares passa a "lista única em `src/shared/teams.ts`".
   - Os caminhos `src/index.js`/`src/demo.js` passam a `src/worker/`.
-- [ ] T074 Publicar sem indisponibilidade. **Pré-requisito**: T071 verde, ou seja, US1, US2 e US3 completas, `npm run check` e `npm run test:visual` passando (constituição II e IV: nada vai para produção com lint ou testes do domínio pendentes).
+- [X] T074 Publicar sem indisponibilidade. **Pré-requisito**: T071 verde, ou seja, US1, US2 e US3 completas, `npm run check` e `npm run test:visual` passando (constituição II e IV: nada vai para produção com lint ou testes do domínio pendentes).
   1. `npm run build && npx wrangler versions upload`.
   2. No URL de preview, validar quickstart §5 e os subdomínios antigos (via `curl -I -H "Host: o-gremio-cai.diuliano.com"` no preview, ou direto em produção logo após o deploy).
   3. `npx wrangler versions deploy` para 100%.
   4. Conferir `vaicair.diuliano.com`, `/gremio` e `o-inter-cai.diuliano.com` (301).
 
   Se der problema, `npx wrangler rollback`.
-- [ ] T075 Commitar e criar a tag `pos-migracao`.
+- [X] T075 Commitar e criar a tag `pos-migracao`.
 
 ---
 
