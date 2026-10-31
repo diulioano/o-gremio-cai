@@ -180,10 +180,10 @@ Estrutura das specs 001 e 002: `src/domain`, `src/shared`, `src/worker`, `src/cl
 
 ## Phase 7: Polish & Cross-Cutting
 
-- [ ] T026 [P] Em `tests/visual/parity.spec.ts`, conferir que as páginas de time continuam iguais acima da linha da torcida. O botão flutuante muda todas as capturas: atualizar os baselines de propósito, depois de revisar cada uma, ou escondê-lo nas capturas de paridade e testá-lo à parte.
+- [X] T026 (votação simulada no teste; 40 capturas regravadas e revisadas) [P] Em `tests/visual/parity.spec.ts`, conferir que as páginas de time continuam iguais acima da linha da torcida. O botão flutuante muda todas as capturas: atualizar os baselines de propósito, depois de revisar cada uma, ou escondê-lo nas capturas de paridade e testá-lo à parte.
 - [X] T027 [P] Atualizar `PRODUCT.md` (seção Capabilities: votação, D1, regras) e o `README.md` (como criar o D1 e aplicar as migrações).
-- [ ] T028 Rodar `npm run check` e o roteiro completo do `quickstart.md` (incluindo o passo 8 com `curl` e o passo 9 com a votação encerrada nos dados de demonstração).
-- [ ] T029 Publicar, com confirmação do usuário:
+- [X] T028 Rodar `npm run check` e o roteiro completo do `quickstart.md` (incluindo o passo 8 com `curl` e o passo 9 com a votação encerrada nos dados de demonstração).
+- [X] T029 (publicado: versão ce509cdd) Publicar, com confirmação do usuário:
   1. `npx wrangler d1 migrations apply vaicair-votos --remote`;
   2. `npm run deploy`;
   3. conferir `SELECT * FROM tally` em produção e as métricas de linhas do D1 no painel.

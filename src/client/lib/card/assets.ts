@@ -19,6 +19,7 @@ const FD = /^https?:\/\/crests\.football-data\.org\/(\d+(?:_large)?)\.(png|svg)$
 export function crestUrl(id: number, apiCrest: string | null): string | null {
   const own = (Object.keys(TEAMS) as TeamSlug[]).find((s) => TEAMS[s].id === id);
   if (own) return `/${own}.svg`;
+  if (apiCrest?.startsWith('/') && !apiCrest.startsWith('//')) return apiCrest;
   const m = apiCrest ? FD.exec(apiCrest) : null;
   return m ? `/crest/${(m[2] ?? 'png').toLowerCase()}/${m[1] ?? ''}` : null;
 }

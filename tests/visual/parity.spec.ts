@@ -8,6 +8,9 @@ const crest = Buffer.from(
   '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="#8C98A8"/></svg>',
 );
 
+// estado fixo da votação (specs/003-votacao-rebaixados): aberta, fecha em 2026-12-01, quem abre ainda não votou
+const votes = { open: true, closesAt: Date.parse('2026-12-02T00:00:00Z'), total: 1284 };
+
 const PAGES = [
   '',
   'gremio',
@@ -24,6 +27,10 @@ const STATES = { real: null, palpites } as const;
 
 async function setup(page: Page, pal: string | null) {
   await page.route('**/api/data', (r) => r.fulfill({ contentType: 'application/json', body: payload }));
+  // votação aberta e sem voto deste aparelho: a tela não depende do banco local
+  await page.route('**/api/votes**', (r) =>
+    r.fulfill({ contentType: 'application/json', body: JSON.stringify(votes) }),
+  );
   await page.route('https://crests.football-data.org/**', (r) =>
     r.fulfill({ contentType: 'image/svg+xml', body: crest }),
   );

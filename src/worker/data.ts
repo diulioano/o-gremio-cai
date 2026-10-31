@@ -3,6 +3,7 @@
 // Ver specs/002-atualizacao-por-minuto/contracts/api-data.md.
 import { isLiveWindow, STALE_IDLE_MS, STALE_LIVE_MS } from '../domain/live';
 import type { DataError, DataPayload, SlimTeam } from '../shared/api';
+import { CLUB_FIXES } from '../shared/teams';
 import { demoData } from './demo';
 
 const API = 'https://api.football-data.org/v4/competitions/BSA/matches';
@@ -79,9 +80,18 @@ export function slim(raw: FdResponse): DataPayload {
   };
 }
 
+/** Nome e escudo atuais dos clubes que a fonte manda desatualizados (CLUB_FIXES). Vale também para o que já está no KV. */
+export function withFixes(d: DataPayload): DataPayload {
+  const fix = (t: SlimTeam): SlimTeam => {
+    const f = t.id === null ? undefined : CLUB_FIXES[t.id];
+    return f ? { ...t, ...f } : t;
+  };
+  return { ...d, matches: d.matches.map((m) => ({ ...m, h: fix(m.h), a: fix(m.a) })) };
+}
+
 // Durante jogo o navegador guarda a resposta só 30 s, para a busca de minuto em minuto da página ver dados novos.
 function json(body: DataPayload | DataError, status = 200, live = false): Response {
-  return new Response(JSON.stringify(body), {
+  return new Response(JSON.stringify('matches' in body ? withFixes(body) : body), {
     status,
     headers: {
       'content-type': 'application/json; charset=utf-8',

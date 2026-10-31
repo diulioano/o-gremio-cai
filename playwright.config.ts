@@ -1,6 +1,6 @@
 import { defineConfig, devices } from '@playwright/test';
 
-// Paridade visual: compara cada tela com o baseline gravado da versão antiga (tag pre-migracao).
+// Regressão visual: compara cada tela com o baseline (regravado na spec 003, com o compartilhar e a votação).
 // BASE_URL aponta para o servidor a comparar; sem ela, o próprio Playwright sobe o build novo.
 const external = !!process.env.BASE_URL;
 

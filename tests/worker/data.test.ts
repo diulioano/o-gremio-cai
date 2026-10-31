@@ -1,7 +1,7 @@
 // GET /api/data: specs/001-migracao-framework-web/contracts/api-data.md e o delta em
 // specs/002-atualizacao-por-minuto/contracts/api-data.md.
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { CACHE_KEY, getData, slim, type FdResponse } from '../../src/worker/data';
+import { CACHE_KEY, getData, slim, type FdResponse, withFixes } from '../../src/worker/data';
 import type { DataError, DataPayload, SlimMatch } from '../../src/shared/api';
 
 const MIN = 60_000;
@@ -55,6 +55,28 @@ const ctx = {
 
 afterEach(() => {
   vi.restoreAllMocks();
+});
+
+describe('withFixes', () => {
+  const t = (id: number, name: string, crest: string | null) => ({ id, name, tla: 'X', crest });
+  it('Athletico: nome e escudo atuais, nos dois lados do jogo; os outros ficam iguais', () => {
+    const ath = t(1768, 'Paranaense', 'https://crests.football-data.org/1768.png');
+    const gre = t(1767, 'Grêmio', 'https://crests.football-data.org/1767.png');
+    const m = {
+      id: 1,
+      md: 34,
+      status: 'TIMED',
+      utc: '2026-11-01T19:00:00Z',
+      h: ath,
+      a: gre,
+      hs: null,
+      as: null,
+    };
+    const out = withFixes({ fetchedAt: 0, matches: [m, { ...m, id: 2, h: gre, a: ath }] });
+    expect(out.matches[0]?.h).toEqual({ id: 1768, name: 'Athletico-PR', tla: 'X', crest: '/athletico.svg' });
+    expect(out.matches[1]?.a.name).toBe('Athletico-PR');
+    expect(out.matches[0]?.a).toEqual(gre);
+  });
 });
 
 describe('getData', () => {

@@ -53,7 +53,7 @@ Só isso: rotas, títulos, rodapé e página inicial leem dessa lista. O `accent
 
 ## Baseline visual
 
-As telas de referência em `tests/visual/__baseline__/` vêm da versão antiga (tag `pre-migracao`), com os dados de `tests/domain/fixtures/`. Só atualize com `npx playwright test --update-snapshots` quando a mudança visual for intencional, e revise os PNGs no commit.
+As telas de referência em `tests/visual/__baseline__/` são da versão com o card de compartilhar e a votação (regravadas na spec 003; antes vinham da versão antiga, tag `pre-migracao`). Usam os dados de `tests/domain/fixtures/` e um estado fixo da votação (aberta, sem voto deste aparelho). Só atualize com `npx playwright test --update-snapshots` quando a mudança visual for intencional, e revise os PNGs no commit.
 
 ## Windows: `workerd` órfão
 

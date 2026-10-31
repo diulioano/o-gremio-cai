@@ -109,3 +109,12 @@ export const isTeamSlug = (s: string | undefined | null): s is TeamSlug =>
   s != null && Object.prototype.hasOwnProperty.call(TEAMS, s);
 
 export const ask = (t: Pick<Team, 'art' | 'name'>): string => `${t.art} ${t.name} cai?`;
+
+/**
+ * Outros clubes: correções do que a football-data.org manda, pelo id.
+ * O Athletico vem como "Paranaense" e com o escudo antigo (o redondo, trocado em 2018);
+ * public/athletico.svg é o de 2019 (domínio público, Wikimedia Commons) com contorno branco para o fundo escuro.
+ */
+export const CLUB_FIXES: Readonly<Record<number, { name: string; crest: string }>> = {
+  1768: { name: 'Athletico-PR', crest: '/athletico.svg' },
+};
