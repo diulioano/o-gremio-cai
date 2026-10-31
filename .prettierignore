@@ -1,0 +1,15 @@
+node_modules
+dist
+public/*.svg
+specs
+.specify
+.claude
+.impeccable
+.wrangler
+package-lock.json
+tests/**/fixtures/*.json
+tests/visual/__baseline__
+playwright-report
+test-results
+worker-configuration.d.ts
+PRODUCT.md

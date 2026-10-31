@@ -28,33 +28,33 @@ Projeto único na raiz: `src/shared`, `src/domain`, `src/worker`, `src/client`, 
 
 **Purpose**: congelar a versão atual como referência e montar o esqueleto do projeto novo.
 
-- [ ] T001 Iniciar o repositório: `git init`. Acrescentar `dist/`, `test-results/`, `playwright-report/` e `.vite/` em `.gitignore`. Commitar o estado atual como "versão antiga", criar a tag `pre-migracao` e a branch `001-migracao-framework-web`. Conferir que `.dev.vars` NÃO entra no commit.
-- [ ] T002 Instalar o Playwright na versão antiga (`npm i -D @playwright/test@^1.64` e `npx playwright install chromium`) e criar `tests/visual/fixtures/palpites.json` com um conjunto fixo de palpites para os jogos futuros da rodada 31 e 32 dos dados demo (ids 305–320; ex.: `{"305":{"h":2,"a":0},"306":{"h":1,"a":1},...}`, só placares 0–9, sem `auto`).
-- [ ] T003 Criar `tests/visual/capture-fixtures.mjs`: em Node, importar `demoData()` de `src/demo.js` e gravar `tests/domain/fixtures/demo-payload.json` com `{ ...demoData(), demo: true, fetchedAt: 0 }`. Depois, com Playwright contra a versão antiga (`npx wrangler dev --port 8787`), abrir `/gremio` e, via `page.evaluate`, chamar as funções globais `prepare(payload)` e `compute(P, {})` / `compute(P, palpites)` do `public/app.js`. Gravar `tests/domain/fixtures/demo-expected.json` com `{ real: {table:[ids em ordem], pts, pct, dec}, comPalpites: {...} }`. Rodar o script e commitar as fixtures.
-- [ ] T004 Criar `tests/visual/parity.spec.ts` e `playwright.config.ts`:
+- [X] T001 Iniciar o repositório: `git init`. Acrescentar `dist/`, `test-results/`, `playwright-report/` e `.vite/` em `.gitignore`. Commitar o estado atual como "versão antiga", criar a tag `pre-migracao` e a branch `001-migracao-framework-web`. Conferir que `.dev.vars` NÃO entra no commit.
+- [X] T002 Instalar o Playwright na versão antiga (`npm i -D @playwright/test@^1.64` e `npx playwright install chromium`) e criar `tests/visual/fixtures/palpites.json` com um conjunto fixo de palpites para os jogos futuros da rodada 31 e 32 dos dados demo (ids 305–320; ex.: `{"305":{"h":2,"a":0},"306":{"h":1,"a":1},...}`, só placares 0–9, sem `auto`).
+- [X] T003 Criar `tests/visual/capture-fixtures.mjs`: em Node, importar `demoData()` de `src/demo.js` e gravar `tests/domain/fixtures/demo-payload.json` com `{ ...demoData(), demo: true, fetchedAt: 0 }`. Depois, com Playwright contra a versão antiga (`npx wrangler dev --port 8787`), abrir `/gremio` e, via `page.evaluate`, chamar as funções globais `prepare(payload)` e `compute(P, {})` / `compute(P, palpites)` do `public/app.js`. Gravar `tests/domain/fixtures/demo-expected.json` com `{ real: {table:[ids em ordem], pts, pct, dec}, comPalpites: {...} }`. Rodar o script e commitar as fixtures.
+- [X] T004 Criar `tests/visual/parity.spec.ts` e `playwright.config.ts`:
   - **Config**: `baseURL` vem de `process.env.BASE_URL` (padrão `http://localhost:8787`); `snapshotPathTemplate: 'tests/visual/__baseline__/{arg}{ext}'`; `reducedMotion: 'reduce'`; projetos `mobile` (390×844, `isMobile`) e `desktop` (1440×900).
   - **Interceptação de dados**: `page.route('**/api/data')` responde com `tests/domain/fixtures/demo-payload.json`, para que os dados não dependam do token.
   - **Telas**: para cada página (`/` + os 9 slugs) × estado (sem palpites; com `palpites.json` injetado via `addInitScript` em `localStorage['gremiocai-palpites-v1']`), esperar `document.fonts.ready` e o texto "Dados de demonstração" e tirar `toHaveScreenshot('<slug|home>-<estado>-<projeto>.png', { fullPage: true, maxDiffPixelRatio: 0.01 })`.
-- [ ] T005 Gerar o baseline contra a versão antiga: `npx wrangler dev --port 8787` + `npx playwright test tests/visual/parity.spec.ts --update-snapshots`. Conferir os 40 PNGs em `tests/visual/__baseline__/` e commitar.
-- [ ] T006 Instalar as dependências novas em `package.json` (versões de research.md):
+- [X] T005 Gerar o baseline contra a versão antiga: `npx wrangler dev --port 8787` + `npx playwright test tests/visual/parity.spec.ts --update-snapshots`. Conferir os 40 PNGs em `tests/visual/__baseline__/` e commitar.
+- [X] T006 Instalar as dependências novas em `package.json` (versões de research.md):
   - **runtime**: `preact@^10`
-  - **dev**: `vite@^8`, `@preact/preset-vite`, `@cloudflare/vite-plugin@^1.66`, `wrangler@^4.154`, `typescript@~6.0`, `@cloudflare/workers-types`, `vitest@^4.1`, `@cloudflare/vitest-pool-workers@^0.23`, `eslint@^10`, `typescript-eslint@^8.72`, `eslint-plugin-react-hooks@^7`, `prettier@^3`
+  - **dev**: `vite@^8`, `@preact/preset-vite`, `@cloudflare/vite-plugin@^1.66`, `wrangler@^4.154`, `typescript@~6.0`, `@cloudflare/workers-types`, `vitest@^4.1`, `@cloudflare/vitest-plugin@^1.4`, `eslint@^10`, `typescript-eslint@^8.72`, `eslint-plugin-react-hooks@^7`, `prettier@^3`
   - **scripts**: `dev: vite`, `build: vite build`, `preview: vite preview`, `deploy: npm run build && wrangler deploy`, `typecheck: tsc -b`, `lint: eslint .`, `format: prettier -w .`, `format:check: prettier -c .`, `test: vite build && vitest run` (os testes do Worker precisam de `dist/client` para o binding `ASSETS`), `test:visual: playwright test tests/visual/parity.spec.ts`, `check: npm run typecheck && npm run lint && npm run format:check && npm test`, `cf-typegen: wrangler types`
-- [ ] T007 [P] Criar `tsconfig.json` (solution, com `references`) e `tsconfig.client.json`, `tsconfig.worker.json` e `tsconfig.node.json`:
+- [X] T007 [P] Criar `tsconfig.json` (solution, com `references`) e `tsconfig.client.json`, `tsconfig.worker.json` e `tsconfig.node.json`:
   - **Em todos**: `strict`, `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes: false`, `module: ESNext`, `moduleResolution: Bundler`, `verbatimModuleSyntax`.
   - **client**: `jsx: react-jsx`, `jsxImportSource: preact`, `lib: DOM`, include `src/client`, `src/domain`, `src/shared` e `tests/types/client-contract.ts`.
   - **worker**: types `@cloudflare/workers-types` + `worker-configuration.d.ts`, include `src/worker`, `src/shared`, `tests/worker` e `tests/types/worker-contract.ts`. Sem `lib: DOM`: por isso nada em `src/shared` pode usar APIs de navegador.
   - **node**: os arquivos de config, `tests/domain`, `tests/structure.test.ts` e `tests/visual`, com `lib: ["ES2023", "DOM"]` (o `storage.test.ts` importa `src/client/lib/storage.ts`, que usa `localStorage`).
-- [ ] T008 [P] Criar `eslint.config.js` (flat):
+- [X] T008 [P] Criar `eslint.config.js` (flat):
   - **Base**: `typescript-eslint` `strictTypeChecked` + `stylisticTypeChecked` com `parserOptions.projectService`, e `eslint-plugin-react-hooks` `recommended` em `src/client/**`.
   - **Fronteiras com `no-restricted-imports`**: `src/domain/**` não pode importar `preact*`, `src/client/**` nem `src/worker/**`; `src/shared/**` não pode importar nada de `src/client`, `src/worker` nem `src/domain`, nem usar `localStorage`/`window`/`document` (`no-restricted-globals`).
   - **Ignorar**: `dist`, `tests/visual/__baseline__` e `public`.
-- [ ] T009 [P] Criar `.prettierrc` (`{"singleQuote":true,"semi":true,"printWidth":110,"trailingComma":"all"}`) e `.prettierignore` (`dist`, `public/*.svg`, `specs`, `.specify`, `package-lock.json`, `tests/**/fixtures/*.json`).
-- [ ] T010 Criar `vite.config.ts` com `plugins: [preact(), cloudflare()]` e atualizar `wrangler.jsonc`:
-  - **Mudanças**: `main: "src/worker/index.ts"`; `assets.directory` passa de `./public` para `./dist/client` (a saída do build do cliente). O plugin usa essa pasta no deploy, e o `vitest-pool-workers` precisa dela para criar o binding `ASSETS` nos testes.
+- [X] T009 [P] Criar `.prettierrc` (`{"singleQuote":true,"semi":true,"printWidth":110,"trailingComma":"all"}`) e `.prettierignore` (`dist`, `public/*.svg`, `specs`, `.specify`, `package-lock.json`, `tests/**/fixtures/*.json`).
+- [X] T010 Criar `vite.config.ts` com `plugins: [preact(), cloudflare()]` e atualizar `wrangler.jsonc`:
+  - **Mudanças**: `main: "src/worker/index.ts"`; `assets.directory` passa de `./public` para `./dist/client` (a saída do build do cliente). O plugin usa essa pasta no deploy, e o `vitest-plugin` precisa dela para criar o binding `ASSETS` nos testes.
   - **Manter iguais**: `assets.binding: "ASSETS"`, `assets.run_worker_first: ["/*", "!/*.*"]`, `routes`, `kv_namespaces`, `workers_dev` e `compatibility_date`.
   - **Depois**: rodar `npm run cf-typegen` para gerar `worker-configuration.d.ts` (Env com `ASSETS`, `CACHE` e `FOOTBALL_DATA_TOKEN`).
-- [ ] T011 [P] Criar `vitest.config.ts` com `test.projects`: `domain` (environment node, `tests/domain/**/*.test.ts`) e `worker` (`defineWorkersProject` de `@cloudflare/vitest-pool-workers`, `wrangler.configPath: ./wrangler.jsonc`, `tests/worker/**/*.test.ts`, miniflare com binding `FOOTBALL_DATA_TOKEN` vazio). A checagem de tipos do contrato fica com o `tsc -b` (T061), não com o Vitest.
+- [X] T011 [P] Criar `vitest.config.ts` com `test.projects`: `domain` (environment node, `tests/domain/**/*.test.ts`) e `worker` (`defineWorkersProject` de `@cloudflare/vitest-plugin`, `wrangler.configPath: ./wrangler.jsonc`, `tests/worker/**/*.test.ts`, miniflare com binding `FOOTBALL_DATA_TOKEN` vazio). A checagem de tipos do contrato fica com o `tsc -b` (T061), não com o Vitest.
 
 **Checkpoint**: baseline visual e fixtures commitados na tag/branch. `npm install` funciona. A versão antiga continua intacta e no ar.
 
@@ -66,12 +66,12 @@ Projeto único na raiz: `src/shared`, `src/domain`, `src/worker`, `src/client`, 
 
 ### Shared e armazenamento
 
-- [ ] T012 [P] Criar `src/shared/teams.ts` portando `TEAMS` de `public/app.js:12-32`:
+- [X] T012 [P] Criar `src/shared/teams.ts` portando `TEAMS` de `public/app.js:12-32`:
   - **Tipo**: `TeamSlug` = união literal dos 9 slugs. `Team = { id: number; code: string; art: 'O' | 'A'; name: string; accent: string; halo: string; bg: string }`. Declarar `TEAMS` com `as const satisfies Record<TeamSlug, Team>`, na ordem atual (gremio, inter, corinthians, vasco, botafogo, coritiba, vitoria, mirassol, remo).
   - **Exportar**: `ask(t) => \`${t.art} ${t.name} cai?\`` e `isTeamSlug(s): s is TeamSlug`.
   - **Comentários**: preservar os de `public/app.js:5-11` (identificar por id, accent nunca vermelho nem verde).
-- [ ] T013 [P] Criar `src/shared/api.ts` com os tipos exatos de `contracts/api-data.md`: `ApiStatus`, `SlimTeam`, `SlimMatch`, `DataPayload` (`fetchedAt`, `matches`, `demo?: true`, `stale?: true`) e `DataError`.
-- [ ] T014 [P] Criar `src/client/lib/storage.ts` (fica no cliente, e não em `shared`, porque usa `localStorage` e `shared` também é compilado no Worker):
+- [X] T013 [P] Criar `src/shared/api.ts` com os tipos exatos de `contracts/api-data.md`: `ApiStatus`, `SlimTeam`, `SlimMatch`, `DataPayload` (`fetchedAt`, `matches`, `demo?: true`, `stale?: true`) e `DataError`.
+- [X] T014 [P] Criar `src/client/lib/storage.ts` (fica no cliente, e não em `shared`, porque usa `localStorage` e `shared` também é compilado no Worker):
   - **Chaves**: `PREDICTIONS_KEY = 'gremiocai-palpites-v1'` e `DATA_KEY = 'gremiocai-dados-v1'`.
   - **Tipos**: `Prediction = { h: number; a: number; auto?: 1 }`, `Predictions = Record<string, Prediction>`.
   - **Funções**: `loadPredictions()`, `savePredictions(p)`, `loadCachedData(): DataPayload | null` e `saveCachedData(d)`, seguindo as regras de `contracts/browser-storage.md`:
@@ -83,56 +83,56 @@ Projeto único na raiz: `src/shared`, `src/domain`, `src/worker`, `src/client`, 
 
 ### Domínio (puro; mesma ordem de operações do código antigo)
 
-- [ ] T015 [P] Criar `src/domain/rng.ts`: `mulberry(seed): () => number` (cópia exata de `public/app.js:61-68`) e `drawGoals(lambda, rng = Math.random)` (de `public/app.js:163`, limite 9).
-- [ ] T016 [P] Criar `src/domain/format.ts`:
+- [X] T015 [P] Criar `src/domain/rng.ts`: `mulberry(seed): () => number` (cópia exata de `public/app.js:61-68`) e `drawGoals(lambda, rng = Math.random)` (de `public/app.js:163`, limite 9).
+- [X] T016 [P] Criar `src/domain/format.ts`:
   - **Funções portadas**: `when(utc)` e `roundRange(games)` (de `public/app.js:38-59`, fuso `America/Sao_Paulo`, mantendo o truque `dtf` en-US → `WD`/`MO` pt-BR); `pctLabel(p, dec)` (de `:158`: `salvo`→`0%`, `reb`→`100%`, `<0.01`→`<1%`, `>0.99`→`>99%`); `signed(n)` (de `:415`, com o sinal `−` U+2212); `hm(ts)` (de `:160`).
   - **Funções novas**: `timeAgo(mins)` e `games(n)`. A primeira gera os textos "agora" / "há N min" / "há N h" de `:207`; a segunda gera "N jogo(s)" de `:440`.
-- [ ] T017 [P] Criar `src/domain/standings.ts`: tipo `StandingRow` (`id, name, code, crest, pts, j, v, e, d, gp, gc, sg`), `play(h, a, x, y)` (de `public/app.js:73-76`) e `compareStandings` (de `:71`; ordem "pontos ↓, vitórias ↓, saldo ↓, gols pró ↓, nome (localeCompare) ↑").
-- [ ] T018 Criar `src/domain/prepare.ts` portando `prepare` de `public/app.js:41,78-104` como `prepare(payload: DataPayload, team: Team | null): Prepared`:
+- [X] T017 [P] Criar `src/domain/standings.ts`: tipo `StandingRow` (`id, name, code, crest, pts, j, v, e, d, gp, gc, sg`), `play(h, a, x, y)` (de `public/app.js:73-76`) e `compareStandings` (de `:71`; ordem "pontos ↓, vitórias ↓, saldo ↓, gols pró ↓, nome (localeCompare) ↑").
+- [X] T018 Criar `src/domain/prepare.ts` portando `prepare` de `public/app.js:41,78-104` como `prepare(payload: DataPayload, team: Team | null): Prepared`:
   - **Tipos**: `Match` e `Prepared` conforme data-model.md. O `team` deixa de vir de global e passa a ser parâmetro.
   - **Mapa `STATUS`**: igual ao de `:41`; "FINISHED/AWARDED → `fin` (vira `fut` se não tiver placar)". Status desconhecido ou time sem id: o jogo é descartado.
   - **`findId`**: porta de `:37`; procura pelo id e, na falta, pela sigla.
   - **Força**: `K = 5`, médias padrão 1.4/1.0.
   - **`current`**: a primeira rodada com algum jogo não encerrado e não adiado. Se não houver, a última rodada.
   - **Nomes**: os campos do jogo podem ganhar nomes legíveis (`round`, `home`, `away`, `homeGoals`, `awayGoals`), desde que todos os consumidores sejam atualizados.
-- [ ] T019 Criar `src/domain/simulate.ts` portando `compute` de `public/app.js:106-156` como `simulate(P, predictions, rng = mulberry(42)): SimulationResult`, separando internamente `computeTable(P, predictions)` (tabela com palpites, só para jogos `fut`) e `decide(...)` (salvo/reb). Constante exportada `N_SIM = 5000`.
+- [X] T019 Criar `src/domain/simulate.ts` portando `compute` de `public/app.js:106-156` como `simulate(P, predictions, rng = mulberry(42)): SimulationResult`, separando internamente `computeTable(P, predictions)` (tabela com palpites, só para jogos `fut`) e `decide(...)` (salvo/reb). Constante exportada `N_SIM = 5000`.
   - **CRÍTICO**: manter exatamente a ordem de consumo do RNG para os % não mudarem:
     1. Um único `rng` por chamada.
     2. Em cada iteração, primeiro `pois` para cada jogo restante (mandante, depois visitante).
     3. Depois `n` sorteios de `tie`, na ordem de `ids`.
   - **Sem jogos restantes**: aplicar a regra de `:141-145`.
-- [ ] T020 [P] Criar `src/domain/verdict.ts`: `verdict(result, gid)` → `{ yes, pos, row, pctLabel, ctxRest, badge }`, com os textos exatos de `public/app.js:381-391`:
+- [X] T020 [P] Criar `src/domain/verdict.ts`: `verdict(result, gid)` → `{ yes, pos, row, pctLabel, ctxRest, badge }`, com os textos exatos de `public/app.js:381-391`:
   - `"de chance de cair · {pos}º lugar · {gap} pt(s) para sair do Z4"`, ou `"fora do Z4 só no desempate"` quando o gap é 0.
   - `"... {gap} pt(s) acima do Z4"`, ou `"à frente do Z4 no desempate"` quando o gap é 0.
   - O selo é `'SALVO MATEMATICAMENTE' | 'REBAIXADO' | null`.
   - **Exportar também** `homeCards(P, result)`, a montagem e ordenação dos cartões da home de `:247-255`: ordem por `p` decrescente, depois `pos` decrescente; `yes = pos > n-4`.
-- [ ] T021 [P] Criar `src/domain/predictions.ts` com funções imutáveis (recebem `Predictions` e devolvem uma cópia nova) portadas de `public/app.js:416-438`:
+- [X] T021 [P] Criar `src/domain/predictions.ts` com funções imutáveis (recebem `Predictions` e devolvem uma cópia nova) portadas de `public/app.js:416-438`:
   - `pick(p, id, 'V'|'E'|'D')` → `{1,0}`/`{1,1}`/`{0,1}`.
   - `step(p, id, side, ±1)` e `setValue(p, id, side, text)`: limitam o placar entre 0 e 9, usam o último dígito digitado e removem `auto`.
   - `fill(p, games, lambda, rng?)`: sorteia só os jogos `fut` sem palpite ou com `auto`.
   - `clear(p, id)`, `clearRound(p, games)`.
   - `missingIn(games, p)` e `incompleteRounds(P, p)`.
   - `outcome(pred)` → `'V'|'E'|'D'`.
-- [ ] T022 Criar `tests/domain/parity.test.ts`. Ele carrega `fixtures/demo-payload.json`, roda `simulate(prepare(payload, null), {})` e `simulate(..., palpites.json)` e compara com `fixtures/demo-expected.json`: ordem da tabela, pontos, `pct` **exatamente iguais** e `dec`. Rodar `npm test` até passar. Este é o portão da fase.
+- [X] T022 Criar `tests/domain/parity.test.ts`. Ele carrega `fixtures/demo-payload.json`, roda `simulate(prepare(payload, null), {})` e `simulate(..., palpites.json)` e compara com `fixtures/demo-expected.json`: ordem da tabela, pontos, `pct` **exatamente iguais** e `dec`. Rodar `npm test` até passar. Este é o portão da fase.
 
 ### Worker
 
-- [ ] T023 [P] Portar `src/demo.js` para `src/worker/demo.ts` tipado (retorna `DataPayload` sem `demo`). Não pode haver mudança no algoritmo nem nas sementes.
-- [ ] T024 [P] Criar `src/worker/data.ts` portando `data`, `slim` e `json` de `src/index.js:39-80`:
+- [X] T023 [P] Portar `src/demo.js` para `src/worker/demo.ts` tipado (retorna `DataPayload` sem `demo`). Não pode haver mudança no algoritmo nem nas sementes.
+- [X] T024 [P] Criar `src/worker/data.ts` portando `data`, `slim` e `json` de `src/index.js:39-80`:
   - **Assinatura**: `getData(env: Env, ctx: ExecutionContext): Promise<Response>`.
   - **Tipos**: `slim(raw): DataPayload`, com tipo mínimo da resposta da football-data.
   - **Constantes**: as mesmas `API`, `TTL_MS` (1h) e `KEY = 'bsa-matches-v1'`.
   - **Headers**: os mesmos `content-type` e `cache-control: public, max-age=300`.
-- [ ] T025 [P] Criar `src/worker/team-page.ts` portando `teamPage` de `src/index.js:28-37`. O título vem de `ask(TEAMS[slug])` de `src/shared/teams.ts`. O resto do HTMLRewriter não muda: `html[data-team]`, `title`, `meta[property="og:title"]` e `link[rel="icon"]` → `/<slug>.svg`.
-- [ ] T026 Criar `src/worker/index.ts` portando o roteamento de `src/index.js:16-26` (redirect 301 dos subdomínios `^[oa]-([a-z-]+)-cai\.` → `SITE/<slug|''>`, `/api/data`, `/<slug>` com trim de barras e minúsculas, senão `env.ASSETS.fetch`) usando `isTeamSlug`. `export default { fetch } satisfies ExportedHandler<Env>`. Ao terminar, apagar `src/index.js` e `src/demo.js` (o original fica na tag `pre-migracao`).
+- [X] T025 [P] Criar `src/worker/team-page.ts` portando `teamPage` de `src/index.js:28-37`. O título vem de `ask(TEAMS[slug])` de `src/shared/teams.ts`. O resto do HTMLRewriter não muda: `html[data-team]`, `title`, `meta[property="og:title"]` e `link[rel="icon"]` → `/<slug>.svg`.
+- [X] T026 Criar `src/worker/index.ts` portando o roteamento de `src/index.js:16-26` (redirect 301 dos subdomínios `^[oa]-([a-z-]+)-cai\.` → `SITE/<slug|''>`, `/api/data`, `/<slug>` com trim de barras e minúsculas, senão `env.ASSETS.fetch`) usando `isTeamSlug`. `export default { fetch } satisfies ExportedHandler<Env>`. Ao terminar, apagar `src/index.js` e `src/demo.js` (o original fica na tag `pre-migracao`).
 
 ### Entrada e estilos globais
 
-- [ ] T027 [P] Criar `src/client/styles/tokens.css`, `global.css` e `animations.css` movendo **sem alterar** o `<style>` de `public/index.html:16-40`:
+- [X] T027 [P] Criar `src/client/styles/tokens.css`, `global.css` e `animations.css` movendo **sem alterar** o `<style>` de `public/index.html:16-40`:
   - **tokens.css**: `[data-theme="dark"]` e `[data-font="archivo"]`.
   - **global.css**: reset, links, botões, `:focus-visible`, `::selection`, scrollbar, `.sr`, `.ico`, `.card` e os inputs number.
   - **animations.css**: os keyframes `stamp`, `glowpulse`, `livedot` e `shimmer`, e o bloco `prefers-reduced-motion`.
-- [ ] T028 Criar `index.html` na raiz (entrada do Vite) copiando o `<head>` de `public/index.html:1-14` (lang, meta, og, theme-color, favicon inline e preconnect/link da fonte Archivo), sem o `<style>` e sem os `<script>` do unpkg. O body fica com `<div id="app"></div>` + `<script type="module" src="/src/client/main.tsx"></script>`. **Na mesma tarefa**, apagar `public/index.html` e `public/app.js`: o Vite copia tudo de `public/` para o build e para o `vite dev`, e a página antiga conflitaria com a nova. O original fica na tag `pre-migracao` e é a fonte do port (`git show pre-migracao:public/app.js`).
+- [X] T028 Criar `index.html` na raiz (entrada do Vite) copiando o `<head>` de `public/index.html:1-14` (lang, meta, og, theme-color, favicon inline e preconnect/link da fonte Archivo), sem o `<style>` e sem os `<script>` do unpkg. O body fica com `<div id="app"></div>` + `<script type="module" src="/src/client/main.tsx"></script>`. **Na mesma tarefa**, apagar `public/index.html` e `public/app.js`: o Vite copia tudo de `public/` para o build e para o `vite dev`, e a página antiga conflitaria com a nova. O original fica na tag `pre-migracao` e é a fonte do port (`git show pre-migracao:public/app.js`).
 
 **Checkpoint**: `npm run typecheck` passa para shared, domain e worker. `parity.test.ts` está verde. O Worker novo sobe com `npm run dev` e responde `/api/data`.
 

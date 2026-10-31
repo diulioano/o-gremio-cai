@@ -23,7 +23,7 @@ Ponto de partida: `public/app.js` (663 linhas, Preact 10 + htm carregados do unp
 ## R3. Build e integração com o Cloudflare Worker
 
 - **Decision**: **Vite 8** + `@preact/preset-vite` + **`@cloudflare/vite-plugin`** (≥1.66, que pede `wrangler ^4.154`). Um único `vite build` gera o bundle do cliente e o Worker. `wrangler deploy` publica o resultado.
-- **Rationale**: é a integração oficial da Cloudflare. O `vite dev` roda o Worker no runtime `workerd` de verdade (KV, assets, HTMLRewriter), então o desenvolvimento local fica fiel à produção. Isso também resolve o problema do `wrangler dev` órfão no Windows, porque passa a existir um único processo, o do Vite. A config `assets.run_worker_first` continua valendo. O `assets.directory` fica apontando para `./dist/client` (a saída do build do cliente), para os testes do Worker no `vitest-pool-workers` terem o binding `ASSETS`. Por isso o `npm test` roda o `vite build` antes.
+- **Rationale**: é a integração oficial da Cloudflare. O `vite dev` roda o Worker no runtime `workerd` de verdade (KV, assets, HTMLRewriter), então o desenvolvimento local fica fiel à produção. Isso também resolve o problema do `wrangler dev` órfão no Windows, porque passa a existir um único processo, o do Vite. A config `assets.run_worker_first` continua valendo. O `assets.directory` fica apontando para `./dist/client` (a saída do build do cliente), para os testes do Worker no `vitest-plugin` terem o binding `ASSETS`. Por isso o `npm test` roda o `vite build` antes.
 - **Alternatives considered**: *Vite só para o cliente + `wrangler dev` separado*: dois processos e dois builds, mais fácil de dessincronizar. *esbuild manual*: perde HMR e plugins.
 
 ## R4. Estilos
@@ -51,13 +51,15 @@ Ponto de partida: `public/app.js` (663 linhas, Preact 10 + htm carregados do unp
 ## R7. Testes
 
 - **Decision**:
-  - **Vitest 4.x** (o `@cloudflare/vitest-pool-workers` 0.23 exige `vitest ^4.1`) com dois projetos:
+  - **Vitest 4.x** (o `@cloudflare/vitest-plugin` 1.4 exige `vitest ^4.1`) com dois projetos:
     - `domain`: ambiente node, testes de `src/domain/**` e `src/client/lib/storage.ts`.
-    - `worker`: `@cloudflare/vitest-pool-workers`, testes de rotas do Worker (redirect 301, página por time com título reescrito, `/api/data` em modo demo, fallback `stale`).
+    - `worker`: `@cloudflare/vitest-plugin`, testes de rotas do Worker (redirect 301, página por time com título reescrito, `/api/data` em modo demo, fallback `stale`).
   - **Playwright** para regressão visual: screenshots de `/` e dos 9 times, em 390×844 e 1440×900, com dados demo e com um conjunto fixo de palpites.
 - **Rationale**: SC-006 (domínio), FR-002/FR-005 (Worker), SC-001 (paridade visual comparável e repetível). Em modo demo os dados são determinísticos (`mulberry(7)`) e a simulação usa semente fixa, então as telas são estáveis. Só `fetchedAt` varia, e o texto em demo não mostra hora.
 - **Baseline**: antes de migrar, capturar os screenshots da versão atual (commit inicial). Os testes visuais da versão nova comparam contra esse baseline, com tolerância de `maxDiffPixelRatio` de ~1%. A spec aceita 1–2 px de diferença.
 - **Alternatives considered**: *Vitest 5*: incompatível com o pool de workers. *Jest*: integração pior com Vite/ESM. *Comparação manual*: não é repetível.
+
+> **Nota (implementação, 2026-10-30)**: o `@cloudflare/vitest-pool-workers` foi renomeado para `@cloudflare/vitest-plugin` e não recebe mais atualizações. Usamos o novo (1.4.x, mesmo API `cloudflareTest`, aceita Vitest 4 e 5).
 
 ## R8. Lint e formatação
 

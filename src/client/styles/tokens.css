@@ -1,0 +1,22 @@
+[data-theme='dark'] {
+  --bg: #07090d;
+  --surface: #10151d;
+  --surface-2: #18202b;
+  --text: #f2f5f8;
+  --text-muted: #8c98a8;
+  --accent: #1a9be0;
+  --danger: #ff2e3d;
+  --safe: #2ee57a;
+  --warn: #ffb020;
+  --line: #233042;
+  color-scheme: dark;
+}
+[data-font='archivo'] {
+  --body: 'Archivo', system-ui, sans-serif;
+  --head: 'Archivo', sans-serif;
+  --head-w: 900;
+  --head-s: 100%;
+  --head-ls: -0.04em;
+  --ans: min(clamp(4rem, 21vw, 17rem), 34vh);
+  --q: clamp(1.3rem, 6vw, 5.4rem);
+}

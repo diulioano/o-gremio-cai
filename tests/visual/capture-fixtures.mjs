@@ -1,4 +1,5 @@
-// Grava as fixtures de paridade a partir da versão antiga (tag pre-migracao).
+// Grava as fixtures de paridade a partir da versão antiga. Só roda com a tag pre-migracao em checkout
+// (usa src/demo.js e as funções globais do public/app.js antigos).
 // Uso: com a versão antiga rodando em http://localhost:8787 (npx wrangler dev --port 8787),
 //   node tests/visual/capture-fixtures.mjs
 import { writeFileSync, readFileSync } from 'node:fs';

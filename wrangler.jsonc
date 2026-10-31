@@ -1,7 +1,7 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "o-gremio-cai",
-  "main": "src/index.js",
+  "main": "src/worker/index.ts",
   "compatibility_date": "2025-10-01",
   "routes": [
     { "pattern": "vaicair.diuliano.com", "custom_domain": true },
@@ -13,7 +13,8 @@
   ],
   "workers_dev": true,
   "assets": {
-    "directory": "./public",
+    // saída do build do cliente (vite build); o @cloudflare/vite-plugin e os testes do Worker usam esta pasta
+    "directory": "./dist/client",
     "binding": "ASSETS",
     // páginas (caminhos sem extensão: /, /inter, /api/data) passam pelo Worker; arquivos (.js, .svg) vão direto
     "run_worker_first": ["/*", "!/*.*"]

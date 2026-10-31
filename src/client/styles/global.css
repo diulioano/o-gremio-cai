@@ -1,0 +1,85 @@
+html,
+body {
+  margin: 0;
+  background: #07090d;
+}
+* {
+  box-sizing: border-box;
+}
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+button {
+  font: inherit;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+html {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+button:disabled {
+  cursor: default;
+}
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+::selection {
+  background: color-mix(in srgb, var(--accent, #1a9be0) 40%, transparent);
+  color: #fff;
+}
+html {
+  scrollbar-color: #233042 #07090d;
+  caret-color: var(--accent, #1a9be0);
+}
+[data-theme] * {
+  scrollbar-color: var(--line) transparent;
+}
+.sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+.ico {
+  width: 1em;
+  height: 1em;
+  flex: none;
+  display: inline-block;
+  vertical-align: -0.125em;
+}
+.card {
+  transition:
+    transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+    filter 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.card:focus-visible {
+  outline-offset: 3px;
+}
+@media (hover: hover) {
+  .card:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.2);
+    text-decoration: none;
+  }
+}
+.card:active {
+  transform: scale(0.985);
+  filter: brightness(1.1);
+}
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}

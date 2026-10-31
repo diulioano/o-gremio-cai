@@ -23,7 +23,7 @@ Trocar o script único (`public/app.js`, Preact + htm via CDN, 663 linhas, estil
 
 **Storage**: Cloudflare KV `CACHE` (inalterado, TTL lógico 1h). `localStorage` do navegador (chaves inalteradas).
 
-**Testing**: Vitest 4.x (projeto `domain` em node + projeto `worker` com `@cloudflare/vitest-pool-workers` 0.23). Playwright 1.6x para regressão visual.
+**Testing**: Vitest 4.x (projeto `domain` em node + projeto `worker` com `@cloudflare/vitest-plugin` 1.4). Playwright 1.6x para regressão visual.
 
 **Target Platform**: Cloudflare Workers + Static Assets. Navegadores modernos, foco em celular (iOS Safari, Chrome Android).
 
@@ -120,7 +120,7 @@ src/
 tests/
 ├── domain/                       # *.test.ts (Vitest, node)
 │   └── fixtures/                 # payload demo + % esperadas, gravadas da versão antiga
-├── worker/                       # *.test.ts (vitest-pool-workers)
+├── worker/                       # *.test.ts (vitest-plugin)
 └── visual/                       # *.spec.ts (Playwright) + __baseline__/
 ```
 
