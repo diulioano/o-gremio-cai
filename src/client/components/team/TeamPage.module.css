@@ -1,0 +1,17 @@
+.main {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 8px 32px 48px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+
+.mobile {
+  padding: 8px 12px 48px;
+}
+
+.wide {
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+}

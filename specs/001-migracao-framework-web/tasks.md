@@ -146,62 +146,62 @@ Projeto único na raiz: `src/shared`, `src/domain`, `src/worker`, `src/client`, 
 
 ### Tests for User Story 1 ⚠️ (escrever primeiro; devem falhar até a UI existir)
 
-- [ ] T029 [P] [US1] Criar `tests/worker/routes.test.ts` (pool de workers, `SELF.fetch`), cobrindo a tabela "rotas HTML" de `contracts/api-data.md`:
+- [X] T029 [P] [US1] Criar `tests/worker/routes.test.ts` (pool de workers, `SELF.fetch`), cobrindo a tabela "rotas HTML" de `contracts/api-data.md`:
   - host `o-inter-cai.diuliano.com` → 301 para `https://vaicair.diuliano.com/inter`
   - `a-xyz-cai.diuliano.com` → 301 para `/`
   - `/Gremio/` → 200 com `data-team="gremio"`, `<title>O Grêmio cai?</title>`, `og:title` e favicon `/gremio.svg`
   - `/` → sem `data-team`
   - `/flamengo` → mesmo status da versão antiga (conferir antes com `npx wrangler dev` na tag `pre-migracao` e anotar no teste; hoje deve ser 404)
-- [ ] T030 [P] [US1] Criar `tests/worker/data.test.ts`:
+- [X] T030 [P] [US1] Criar `tests/worker/data.test.ts`:
   - sem token → 200 e `demo: true`
   - headers `content-type` e `cache-control: public, max-age=300`
   - com token e cópia no KV de menos de 1h → devolve a cópia sem `fetch` (mock com `fetchMock`)
   - fetch falha com cópia no KV → `stale: true`
   - fetch falha sem cópia → 502 `{ error }`
   - `slim` mapeia `shortName || name` e `score.fullTime`
-- [ ] T031 [US1] Apontar `playwright.config.ts` para a versão nova: `webServer: { command: 'npm run build && npm run preview -- --port 8787', url: 'http://localhost:8787', reuseExistingServer: true }`. Não atualizar snapshots: a versão nova é comparada com o baseline da antiga.
+- [X] T031 [US1] Apontar `playwright.config.ts` para a versão nova: `webServer: { command: 'npm run build && npm run preview -- --port 8787', url: 'http://localhost:8787', reuseExistingServer: true }`. Não atualizar snapshots: a versão nova é comparada com o baseline da antiga.
 
 ### Hooks
 
-- [ ] T032 [P] [US1] Criar `src/client/hooks/useViewport.ts` → `{ width, mobile: width < 768, wide: width >= 1100 }`, com listener de `resize` (de `public/app.js:185,196-197,348`).
-- [ ] T033 [P] [US1] Criar `src/client/hooks/useMatchData.ts` portando `useData` de `public/app.js:182-203`: fetch `/api/data`, `saveCachedData`/`loadCachedData` na falha, `err` (incluindo `stale`), `now` atualizado a cada 60 s e `P = useMemo(prepare(raw, team))`. Recebe `team: Team | null`.
-- [ ] T034 [P] [US1] Criar `src/client/hooks/usePredictions.ts`: estado inicial `loadPredictions()`, `update(fn)` que aplica uma função pura de `src/domain/predictions.ts`, salva com `savePredictions` e chama um callback `beforeChange` (usado pelo FLIP). Expõe `predictions`, `isSim` e as ações `pick`, `step`, `setValue`, `fill`, `clear`, `clearRound` e `clearAll`.
-- [ ] T035 [P] [US1] Criar `src/client/hooks/useFlipRows.ts` portando o FLIP de `public/app.js:335-346` e `:370-371`: `capture()` grava o `top` de cada `[data-team]`; `useLayoutEffect` anima `translateY` com 320 ms e `cubic-bezier(.2,.8,.2,1)`, e respeita `prefers-reduced-motion`.
-- [ ] T036 [P] [US1] Criar `src/client/hooks/usePinnedBar.ts` portando `public/app.js:350-367`. Retorna `{ pin: 'top' | 'bottom' | null, bandOut }` a partir de `heroRef`, `rootRef`, `gid` e `mobile`.
+- [X] T032 [P] [US1] Criar `src/client/hooks/useViewport.ts` → `{ width, mobile: width < 768, wide: width >= 1100 }`, com listener de `resize` (de `public/app.js:185,196-197,348`).
+- [X] T033 [P] [US1] Criar `src/client/hooks/useMatchData.ts` portando `useData` de `public/app.js:182-203`: fetch `/api/data`, `saveCachedData`/`loadCachedData` na falha, `err` (incluindo `stale`), `now` atualizado a cada 60 s e `P = useMemo(prepare(raw, team))`. Recebe `team: Team | null`.
+- [X] T034 [P] [US1] Criar `src/client/hooks/usePredictions.ts`: estado inicial `loadPredictions()`, `update(fn)` que aplica uma função pura de `src/domain/predictions.ts`, salva com `savePredictions` e chama um callback `beforeChange` (usado pelo FLIP). Expõe `predictions`, `isSim` e as ações `pick`, `step`, `setValue`, `fill`, `clear`, `clearRound` e `clearAll`.
+- [X] T035 [P] [US1] Criar `src/client/hooks/useFlipRows.ts` portando o FLIP de `public/app.js:335-346` e `:370-371`: `capture()` grava o `top` de cada `[data-team]`; `useLayoutEffect` anima `translateY` com 320 ms e `cubic-bezier(.2,.8,.2,1)`, e respeita `prefers-reduced-motion`.
+- [X] T036 [P] [US1] Criar `src/client/hooks/usePinnedBar.ts` portando `public/app.js:350-367`. Retorna `{ pin: 'top' | 'bottom' | null, bandOut }` a partir de `heroRef`, `rootRef`, `gid` e `mobile`.
 
 ### Componentes comuns (`src/client/components/common/`, cada um `X.tsx` + `X.module.css`)
 
-- [ ] T037 [P] [US1] `Icon.tsx`: paths `prev`/`next`/`close`/`warn`/`dice` e props `name`, `size` e `strokeWidth`, de `public/app.js:165-170`.
-- [ ] T038 [P] [US1] `Crest.tsx`: escudo com fallback de sigla quando a imagem falha (`hideImg`), de `public/app.js:159,442-446`. Props: `team` e `size`.
-- [ ] T039 [P] [US1] `StatusBar.tsx` + `src/client/lib/status.ts`. `status()` vem de `public/app.js:205-214`, com os textos "Dados de demonstração", "Sem conexão · dados de HH:MM", "Carregando dados…", "Atualizado …" e " · Rodada X de Y". A barra vem de `:229-236`, com um slot `right`.
-- [ ] T040 [P] [US1] `Footer.tsx`: nav de times a partir de `TEAMS` (com `aria-current`), avisos e o texto de `N_SIM.toLocaleString('pt-BR')` simulações, de `public/app.js:216-227`. Prop: `currentSlug`.
-- [ ] T041 [P] [US1] `LoadFailed.tsx` (de `public/app.js:173-177`, com o botão "Tentar de novo") e `Skeleton.tsx` (bloco com `shimmer`, com props `height`, `width` e `delay`).
+- [X] T037 [P] [US1] `Icon.tsx`: paths `prev`/`next`/`close`/`warn`/`dice` e props `name`, `size` e `strokeWidth`, de `public/app.js:165-170`.
+- [X] T038 [P] [US1] `Crest.tsx`: escudo com fallback de sigla quando a imagem falha (`hideImg`), de `public/app.js:159,442-446`. Props: `team` e `size`.
+- [X] T039 [P] [US1] `StatusBar.tsx` + `src/client/lib/status.ts`. `status()` vem de `public/app.js:205-214`, com os textos "Dados de demonstração", "Sem conexão · dados de HH:MM", "Carregando dados…", "Atualizado …" e " · Rodada X de Y". A barra vem de `:229-236`, com um slot `right`.
+- [X] T040 [P] [US1] `Footer.tsx`: nav de times a partir de `TEAMS` (com `aria-current`), avisos e o texto de `N_SIM.toLocaleString('pt-BR')` simulações, de `public/app.js:216-227`. Prop: `currentSlug`.
+- [X] T041 [P] [US1] `LoadFailed.tsx` (de `public/app.js:173-177`, com o botão "Tentar de novo") e `Skeleton.tsx` (bloco com `shimmer`, com props `height`, `width` e `delay`).
 
 ### Home (`src/client/components/home/`)
 
-- [ ] T042 [P] [US1] `TeamCard.tsx`: as 3 variações (`tall`/`big`/`small`) com as medidas de `public/app.js:263-285`, `aria-label` igual, SIM/NÃO usando `--danger`/`--safe` e listras `team.bg`/halo via custom properties.
-- [ ] T043 [P] [US1] `Z4Divider.tsx`: a linha tracejada "Z4 Linha da queda" de `public/app.js:288-295`.
-- [ ] T044 [US1] `HomePage.tsx`: hero "Quem vai cair?" + subtítulo, "Na briga" + "Tabela atual" / "Tabela real, sem os seus palpites", skeletons, grade dos SIM (colunas só se `cw / sims.length >= 320`), `Z4Divider`, grade dos NÃO, "Nenhum time da lista está no Z4 hoje." e `Footer`. Fonte: `public/app.js:240-321`; dados de `homeCards()`.
+- [X] T042 [P] [US1] `TeamCard.tsx`: as 3 variações (`tall`/`big`/`small`) com as medidas de `public/app.js:263-285`, `aria-label` igual, SIM/NÃO usando `--danger`/`--safe` e listras `team.bg`/halo via custom properties.
+- [X] T043 [P] [US1] `Z4Divider.tsx`: a linha tracejada "Z4 Linha da queda" de `public/app.js:288-295`.
+- [X] T044 [US1] `HomePage.tsx`: hero "Quem vai cair?" + subtítulo, "Na briga" + "Tabela atual" / "Tabela real, sem os seus palpites", skeletons, grade dos SIM (colunas só se `cw / sims.length >= 320`), `Z4Divider`, grade dos NÃO, "Nenhum time da lista está no Z4 hoje." e `Footer`. Fonte: `public/app.js:240-321`; dados de `homeCards()`.
 
 ### Página do time (`src/client/components/team/`)
 
-- [ ] T045 [P] [US1] `VerdictHero.tsx`: escudo HD + halo, pergunta `ask(team)`, palavra SIM/NÃO/? com `stamp` + `glowpulse` (só no SIM), glows vermelho/verde, selo rotacionado, texto `aria-live` e contexto (% + `ctxRest`), skeleton/`LoadFailed` ("Não achamos …" quando falta `gid`) e o link "ver tabela ↓". Layouts celular e desktop de `public/app.js:392-394` e `:497-563`. Recebe `heroRef`.
-- [ ] T046 [P] [US1] `SimulationBanner.tsx` + `IncompleteRoundsAlert.tsx`: a faixa amarela "MODO SIMULAÇÃO / resposta baseada nos seus palpites / Voltar ao real" e o alerta de rodadas incompletas com o botão "Ver rodada N", de `public/app.js:525-535`.
-- [ ] T047 [P] [US1] `StandingsRow.tsx`: grade `cols` celular/desktop, faixa de zona (Libertadores/Pré/Z4), fundo do time da página ou do Z4 ou zebrado, borda tracejada na linha 17, setas ▲/▼ com `aria-label`, % + barra e rótulo "Z4". Usa `data-team={id}` para o FLIP. Fonte: `public/app.js:399-412` e `:583-602`.
-- [ ] T048 [US1] `StandingsTable.tsx` + `StandingsLegend.tsx`: cabeçalho "Classificação" / "Tabela simulada|atual", `role="table"`, linha de cabeçalho (Pos, Clube, P, J/V/E/D só no desktop, SG, % queda), 8 skeletons e a legenda. Fonte: `public/app.js:567-609`.
-- [ ] T049 [P] [US1] `ScoreInput.tsx`: input number 0–9, `inputMode="numeric"`, placeholder "–", borda `--warn` quando há palpite, botões −/+ de 44×40 só no celular, mesmos `aria-label`. Fonte: `public/app.js:448-454`.
-- [ ] T050 [P] [US1] `OutcomePicker.tsx`: os 3 botões (mandante, "Empate" e visitante) com `aria-pressed` e o estilo ativo/inativo de `public/app.js:419-420,482-487`.
-- [ ] T051 [US1] `MatchCard.tsx`: meta (Encerrado/Em andamento/Adiado/data), AO VIVO com `livedot`, rótulo "Palpite"/"Sorteado" + botão apagar, linhas mandante/visitante com `Crest` e o placar ou `ScoreInput`, `OutcomePicker`, e borda tracejada/`--warn` quando a rodada está incompleta. Fonte: `public/app.js:456-489`.
-- [ ] T052 [P] [US1] `RoundNav.tsx`: botões anterior/próxima (44×44, desabilitados nas pontas com opacidade .35), "Rodada N" e `roundRange`. Fonte: `public/app.js:617-624`.
-- [ ] T053 [US1] `MatchesPanel.tsx`: título "Jogos" / "Palpite = simule o resultado", `RoundNav`, o botão "Simular até o fim"/"Sortear de novo" + o texto de ajuda, o alerta "Falta(m) N jogo(s) nesta rodada" + "Sortear os que faltam", "Limpar palpites desta rodada" e a lista ordenada (jogos do time da página primeiro, depois por horário). Sticky no `wide`, com `id="jogos"`. Fonte: `public/app.js:421-440` e `:611-643`.
-- [ ] T054 [P] [US1] `PinnedVerdictBar.tsx`: a barra fixa no topo ou no rodapé com posição, escudo, nome (se `width >= 360`), pts, % e o botão "Cai? SIM/NÃO" que rola para o topo. Mesmo `aria-label` de `public/app.js:648-659`.
-- [ ] T055 [US1] `TeamPage.tsx`: compõe `StatusBar` (com o selo e o "Voltar ao real" à direita quando `isSim && bandOut`, e o texto escondido no celular nesse caso), `VerdictHero`, `SimulationBanner`, `<main>` com grade `3fr/2fr` no `wide`, `StandingsTable`, `MatchesPanel`, `Footer` e `PinnedVerdictBar`. Usa `--accent: team.accent` no root. Liga `useMatchData`, `usePredictions` (com `beforeChange = flip.capture`), `useFlipRows`, `usePinnedBar` e `useMemo` de `simulate` (real e com palpites). Fonte: `public/app.js:323-333,375-396,491-495,510-519,644-661`.
-- [ ] T056 [US1] Criar `src/client/main.tsx`: importa os 3 CSS globais, lê `document.documentElement.dataset.team`, valida com `isTeamSlug` e faz `render(<TeamPage team=... slug=... />)` ou `render(<HomePage />)` em `#app`.
+- [X] T045 [P] [US1] `VerdictHero.tsx`: escudo HD + halo, pergunta `ask(team)`, palavra SIM/NÃO/? com `stamp` + `glowpulse` (só no SIM), glows vermelho/verde, selo rotacionado, texto `aria-live` e contexto (% + `ctxRest`), skeleton/`LoadFailed` ("Não achamos …" quando falta `gid`) e o link "ver tabela ↓". Layouts celular e desktop de `public/app.js:392-394` e `:497-563`. Recebe `heroRef`.
+- [X] T046 [P] [US1] `SimulationBanner.tsx` + `IncompleteRoundsAlert.tsx`: a faixa amarela "MODO SIMULAÇÃO / resposta baseada nos seus palpites / Voltar ao real" e o alerta de rodadas incompletas com o botão "Ver rodada N", de `public/app.js:525-535`.
+- [X] T047 [P] [US1] `StandingsRow.tsx`: grade `cols` celular/desktop, faixa de zona (Libertadores/Pré/Z4), fundo do time da página ou do Z4 ou zebrado, borda tracejada na linha 17, setas ▲/▼ com `aria-label`, % + barra e rótulo "Z4". Usa `data-team={id}` para o FLIP. Fonte: `public/app.js:399-412` e `:583-602`.
+- [X] T048 [US1] `StandingsTable.tsx` + `StandingsLegend.tsx`: cabeçalho "Classificação" / "Tabela simulada|atual", `role="table"`, linha de cabeçalho (Pos, Clube, P, J/V/E/D só no desktop, SG, % queda), 8 skeletons e a legenda. Fonte: `public/app.js:567-609`.
+- [X] T049 [P] [US1] `ScoreInput.tsx`: input number 0–9, `inputMode="numeric"`, placeholder "–", borda `--warn` quando há palpite, botões −/+ de 44×40 só no celular, mesmos `aria-label`. Fonte: `public/app.js:448-454`.
+- [X] T050 [P] [US1] `OutcomePicker.tsx`: os 3 botões (mandante, "Empate" e visitante) com `aria-pressed` e o estilo ativo/inativo de `public/app.js:419-420,482-487`.
+- [X] T051 [US1] `MatchCard.tsx`: meta (Encerrado/Em andamento/Adiado/data), AO VIVO com `livedot`, rótulo "Palpite"/"Sorteado" + botão apagar, linhas mandante/visitante com `Crest` e o placar ou `ScoreInput`, `OutcomePicker`, e borda tracejada/`--warn` quando a rodada está incompleta. Fonte: `public/app.js:456-489`.
+- [X] T052 [P] [US1] `RoundNav.tsx`: botões anterior/próxima (44×44, desabilitados nas pontas com opacidade .35), "Rodada N" e `roundRange`. Fonte: `public/app.js:617-624`.
+- [X] T053 [US1] `MatchesPanel.tsx`: título "Jogos" / "Palpite = simule o resultado", `RoundNav`, o botão "Simular até o fim"/"Sortear de novo" + o texto de ajuda, o alerta "Falta(m) N jogo(s) nesta rodada" + "Sortear os que faltam", "Limpar palpites desta rodada" e a lista ordenada (jogos do time da página primeiro, depois por horário). Sticky no `wide`, com `id="jogos"`. Fonte: `public/app.js:421-440` e `:611-643`.
+- [X] T054 [P] [US1] `PinnedVerdictBar.tsx`: a barra fixa no topo ou no rodapé com posição, escudo, nome (se `width >= 360`), pts, % e o botão "Cai? SIM/NÃO" que rola para o topo. Mesmo `aria-label` de `public/app.js:648-659`.
+- [X] T055 [US1] `TeamPage.tsx`: compõe `StatusBar` (com o selo e o "Voltar ao real" à direita quando `isSim && bandOut`, e o texto escondido no celular nesse caso), `VerdictHero`, `SimulationBanner`, `<main>` com grade `3fr/2fr` no `wide`, `StandingsTable`, `MatchesPanel`, `Footer` e `PinnedVerdictBar`. Usa `--accent: team.accent` no root. Liga `useMatchData`, `usePredictions` (com `beforeChange = flip.capture`), `useFlipRows`, `usePinnedBar` e `useMemo` de `simulate` (real e com palpites). Fonte: `public/app.js:323-333,375-396,491-495,510-519,644-661`.
+- [X] T056 [US1] Criar `src/client/main.tsx`: importa os 3 CSS globais, lê `document.documentElement.dataset.team`, valida com `isTeamSlug` e faz `render(<TeamPage team=... slug=... />)` ou `render(<HomePage />)` em `#app`.
 
 ### Paridade
 
-- [ ] T057 [US1] Rodar `npm run build` e `npm run test:visual`. Para cada diferença acima de 1%, corrigir o CSS Module ou o componente até as 40 comparações passarem. **Não** atualizar o baseline.
-- [ ] T058 [US1] Fazer as checagens manuais de `quickstart.md` §5:
+- [X] T057 [US1] Rodar `npm run build` e `npm run test:visual`. Para cada diferença acima de 1%, corrigir o CSS Module ou o componente até as 40 comparações passarem. **Não** atualizar o baseline.
+- [X] T058 [US1] Fazer as checagens manuais de `quickstart.md` §5:
   1. Palpites feitos na versão antiga continuam na nova, na mesma origem `localhost:8787`.
   2. Com "reduzir movimento" ligado, não há animação.
   3. A barra fixa aparece embaixo no desktop e em cima no celular.
@@ -294,7 +294,7 @@ Projeto único na raiz: `src/shared`, `src/domain`, `src/worker`, `src/client`, 
 ## Phase 6: Polish & publicação
 
 - [ ] T071 Conferir que não sobrou nada da versão antiga (`public/` só com os 9 SVGs; `src/` só com `shared`, `domain`, `worker` e `client`). Rodar `npm run check` e `npm run test:visual`, que precisam passar sem erro. **Portão da publicação.**
-- [ ] T072 [P] Medir o bundle (`npm run build`, tamanho gzip de `dist/client/assets/*.js`). A meta é ≤ ~25 KB. Anotar em `checklists/parity.md`.
+- [X] T072 [P] Medir o bundle (`npm run build`, tamanho gzip de `dist/client/assets/*.js`). A meta é ≤ ~25 KB. Anotar em `checklists/parity.md`.
 - [ ] T073 [P] Atualizar `PRODUCT.md` → "Capabilities and Constraints":
   - "Front-end em JS puro" passa a "Preact + TypeScript, componentizado (`src/client`)".
   - A frase sobre a lista de times em dois lugares passa a "lista única em `src/shared/teams.ts`".

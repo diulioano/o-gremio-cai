@@ -1,0 +1,119 @@
+.card {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-areas: 'crest txt ans';
+  align-items: center;
+  gap: var(--gap);
+  padding: var(--pad);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--text);
+  text-decoration: none;
+  box-shadow: inset 0 0 0 var(--ring) var(--line);
+}
+
+.card:hover {
+  text-decoration: none;
+}
+
+/* pôster: escudo e SIM em cima, pergunta embaixo na largura toda */
+.tall {
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-rows: auto 1fr;
+  grid-template-areas: 'crest ans' 'txt txt';
+}
+
+.yes {
+  background: color-mix(in srgb, var(--danger) 7%, var(--surface));
+  box-shadow: inset 0 0 0 var(--ring) color-mix(in srgb, var(--danger) 60%, var(--line));
+}
+
+.stripes {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+}
+
+.crest {
+  grid-area: crest;
+  align-self: center;
+  position: relative;
+  width: var(--crest);
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+}
+
+.halo {
+  position: absolute;
+  inset: -30%;
+  border-radius: 50%;
+}
+
+.img {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.txt {
+  grid-area: txt;
+  align-self: center;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.q {
+  font-size: var(--q);
+  line-height: 1.05;
+  text-wrap: balance;
+}
+
+.meta {
+  font-size: var(--meta);
+  line-height: 1.35;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.nowrap {
+  white-space: nowrap;
+}
+
+.ans {
+  grid-area: ans;
+  justify-self: end;
+  align-self: center;
+  margin-top: 0;
+  font-size: var(--ans);
+  line-height: 0.9;
+  letter-spacing: var(--head-ls);
+  color: var(--safe);
+}
+
+.yes .ans {
+  color: var(--danger);
+}
+
+.big .txt {
+  gap: 6px;
+}
+
+.tall .crest,
+.tall .ans {
+  align-self: start;
+}
+
+.tall .ans {
+  margin-top: 6px;
+}
+
+.tall .txt {
+  align-self: end;
+}

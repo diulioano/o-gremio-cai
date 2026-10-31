@@ -1,0 +1,108 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1.5px solid var(--line);
+  background: var(--surface);
+}
+
+.mobile {
+  padding: 10px;
+}
+
+.self {
+  border-color: color-mix(in srgb, var(--accent) 40%, var(--line));
+  background: color-mix(in srgb, var(--accent) 10%, var(--surface));
+}
+
+/* palpite feito, ou jogo sem palpite numa rodada começada */
+.warn {
+  border-color: var(--warn);
+}
+
+.dashed {
+  border-style: dashed;
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 20px;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.metaLeft {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.liveDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--danger);
+}
+
+.live {
+  color: var(--danger);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.pickTag {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.pickLabel {
+  color: var(--warn);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.remove {
+  width: 32px;
+  height: 28px;
+  margin: -6px -8px -6px 0;
+  border: none;
+  background: none;
+  color: var(--warn);
+  display: grid;
+  place-items: center;
+}
+
+.line {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 40px;
+}
+
+.name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+.bold {
+  font-weight: 800;
+}
+
+.score {
+  width: 2.2rem;
+  text-align: center;
+  font-weight: 800;
+  font-size: 1.2rem;
+  font-variant-numeric: tabular-nums;
+}

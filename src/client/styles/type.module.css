@@ -1,0 +1,41 @@
+/* Tipografia e cabeçalhos de seção compartilhados entre as páginas. */
+.head {
+  font-family: var(--head);
+  font-weight: var(--head-w);
+  font-stretch: var(--head-s);
+  text-transform: uppercase;
+}
+
+.sectionHeader {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 2px 12px;
+  margin: 0 0 12px;
+}
+
+.h2 {
+  composes: head;
+  margin: 0;
+  font-size: 1.75rem;
+  letter-spacing: 0.01em;
+}
+
+.h2Mobile {
+  font-size: 1.5rem;
+}
+
+.note {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.page {
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  font-family: var(--body);
+  font-size: 0.95rem;
+  -webkit-font-smoothing: antialiased;
+}

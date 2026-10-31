@@ -1,0 +1,121 @@
+.section {
+  scroll-margin-top: 44px;
+  min-width: 0;
+  position: static;
+  top: 48px;
+}
+
+.mobile {
+  scroll-margin-top: 104px;
+}
+
+.wide {
+  position: sticky;
+}
+
+.box {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.fillBox {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px;
+  border-bottom: 1px solid var(--line);
+}
+
+.fill {
+  height: 44px;
+  border-radius: 8px;
+  border: 1px solid var(--accent);
+  background: color-mix(in srgb, var(--accent) 14%, var(--surface-2));
+  color: var(--text);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.help {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  text-align: center;
+  text-wrap: balance;
+}
+
+.missing {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  padding: 10px 12px;
+  background: color-mix(in srgb, var(--warn) 12%, var(--surface));
+  border-bottom: 1px solid var(--line);
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
+.missingText {
+  flex: 1 1 14rem;
+}
+
+.warn {
+  color: var(--warn);
+}
+
+.muted {
+  color: var(--text-muted);
+}
+
+.drawMissing {
+  flex: none;
+  height: 36px;
+  padding: 0 12px;
+  border-radius: 8px;
+  border: 1px solid var(--warn);
+  background: none;
+  color: var(--warn);
+  font-weight: 700;
+  font-size: 0.8rem;
+}
+
+.clearBox {
+  display: flex;
+  justify-content: center;
+  border-bottom: 1px solid var(--line);
+}
+
+.clear {
+  background: none;
+  border: none;
+  color: var(--warn);
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 10px;
+  text-decoration: underline;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px;
+  max-height: none;
+  overflow: auto;
+}
+
+.mobile .list {
+  padding: 6px;
+}
+
+.wide .list {
+  max-height: calc(100vh - 220px);
+}

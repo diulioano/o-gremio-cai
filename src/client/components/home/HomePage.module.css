@@ -1,0 +1,82 @@
+.hero {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 72px 32px 48px;
+}
+
+.title {
+  margin: 0;
+  font-size: clamp(4rem, 9vw, 8rem);
+  line-height: 0.88;
+  letter-spacing: var(--head-ls);
+}
+
+.danger {
+  color: var(--danger);
+}
+
+.lead {
+  margin: 16px 0 0;
+  max-width: 52ch;
+  font-weight: 600;
+  font-size: clamp(0.95rem, 1.6vw, 1.15rem);
+  line-height: 1.4;
+  color: var(--text-muted);
+  text-wrap: balance;
+}
+
+.main {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 32px 56px;
+}
+
+.header {
+  margin-bottom: 16px;
+}
+
+.empty {
+  margin: 0;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.grid {
+  display: grid;
+  gap: 12px;
+}
+
+.naoGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 8px;
+}
+
+.skLine {
+  margin: 28px 0;
+  border-top: 2px dashed color-mix(in srgb, var(--danger) 35%, transparent);
+}
+
+.mobile .hero {
+  padding: 40px 16px 32px;
+}
+
+.mobile .title {
+  font-size: min(16vw, 4.5rem);
+}
+
+.mobile .main {
+  padding: 0 12px 56px;
+}
+
+.mobile .grid {
+  gap: 8px;
+}
+
+.mobile .naoGrid {
+  grid-template-columns: repeat(auto-fill, minmax(100%, 1fr));
+}
+
+.mobile .skLine {
+  margin: 20px 0;
+}
