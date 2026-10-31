@@ -1,0 +1,59 @@
+/* Pílula escura de 44 px no canto inferior direito, 16 px da borda + área segura (Claude Design: Votacao Torcida).
+   Fica abaixo da barra fixa do veredito (z-index 30) e nunca por cima: com a barra presa embaixo, sobe 12 px acima dela. */
+
+.fab {
+  position: fixed;
+  right: 16px;
+  bottom: calc(16px + env(safe-area-inset-bottom));
+  z-index: 29;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 16px 0 13px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--surface-2);
+  box-shadow:
+    inset 0 0 0 1px var(--line),
+    0 8px 24px rgba(0, 0, 0, 0.55);
+  color: var(--text);
+  font: 700 14px var(--body);
+  cursor: pointer;
+  transition: bottom 0.2s ease-out;
+}
+
+.fab:hover {
+  background: var(--line);
+}
+
+.ico {
+  display: flex;
+  color: var(--accent);
+}
+
+/* barra fixa: 12 px da borda + 52 px de altura + 12 px de folga */
+.raised {
+  bottom: calc(76px + env(safe-area-inset-bottom));
+}
+
+.compact {
+  width: 44px;
+  padding: 0;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+/* PC: sempre por extenso, 24 px dos cantos */
+.desk {
+  right: 24px;
+  bottom: 24px;
+  height: 48px;
+  padding: 0 20px 0 16px;
+  gap: 9px;
+  font-size: 15px;
+}
+
+.desk.raised {
+  bottom: 80px;
+}

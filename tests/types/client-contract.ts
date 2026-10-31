@@ -9,3 +9,8 @@ type Assert<T extends true> = T;
 
 export type RawIsPayload = Assert<Equal<ReturnType<typeof useMatchData>['raw'], DataPayload | null>>;
 export type CacheIsPayload = Assert<Equal<ReturnType<typeof loadCachedData>, DataPayload | null>>;
+
+// /api/votes (specs/003-votacao-rebaixados/contracts/api-votes.md): o estado que a tela recebe é o do contrato
+import type { useVote } from '../../src/client/hooks/useVote';
+import type { VoteState } from '../../src/shared/api';
+export type VoteStateIsContract = Assert<Equal<ReturnType<typeof useVote>['state'], VoteState | null>>;

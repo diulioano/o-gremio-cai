@@ -8,7 +8,7 @@
   bottom: auto;
   z-index: 30;
   display: grid;
-  grid-template-columns: auto 24px minmax(0, 1fr) auto auto auto;
+  grid-template-columns: auto 24px minmax(0, 1fr) auto auto auto auto;
   align-items: center;
   gap: 12px;
   height: 52px;
@@ -93,4 +93,29 @@
   font-size: 1.45rem;
   line-height: 1;
   letter-spacing: var(--head-ls);
+}
+
+.share {
+  height: 40px;
+  min-width: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 14px 0 12px;
+  border: 0;
+  border-radius: 7px;
+  background: var(--surface-2);
+  color: var(--text);
+  font-size: 0.875rem;
+  font-weight: 700;
+  transition: background 0.15s ease;
+}
+
+.share:hover {
+  background: var(--line);
+}
+
+.mobile .share {
+  padding: 0;
 }

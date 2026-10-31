@@ -4,7 +4,8 @@ import { findId, type Prepared } from './prepare';
 import type { SimulationResult } from './simulate';
 import type { StandingRow } from './standings';
 
-export type Badge = 'SALVO MATEMATICAMENTE' | 'REBAIXADO';
+/** Decidido pela matemática com jogos em aberto, ou pela tabela final (ESCAPOU/CAIU). */
+export type Badge = 'SALVO MATEMATICAMENTE' | 'REBAIXADO' | 'ESCAPOU' | 'CAIU';
 
 export interface Verdict {
   /** SIM: o time está no Z4 da tabela exibida */
@@ -21,7 +22,7 @@ export interface Verdict {
 const pts = (n: number) => `${n} pt${n > 1 ? 's' : ''}`;
 
 export function verdict(res: SimulationResult, gid: number): Verdict | null {
-  const { table, pct, dec } = res;
+  const { table, pct, dec, final } = res;
   const n = table.length,
     z = n - 4;
   const i = table.findIndex((t) => t.id === gid);
@@ -46,7 +47,16 @@ export function verdict(res: SimulationResult, gid: number): Verdict | null {
     pct: p,
     pctLabel: pctLabel(p, d),
     ctxRest,
-    badge: d === 'salvo' ? 'SALVO MATEMATICAMENTE' : d === 'reb' ? 'REBAIXADO' : null,
+    badge:
+      d === 'salvo'
+        ? final
+          ? 'ESCAPOU'
+          : 'SALVO MATEMATICAMENTE'
+        : d === 'reb'
+          ? final
+            ? 'CAIU'
+            : 'REBAIXADO'
+          : null,
   };
 }
 

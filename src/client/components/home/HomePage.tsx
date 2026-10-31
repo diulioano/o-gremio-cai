@@ -3,6 +3,7 @@ import { simulate } from '../../../domain/simulate';
 import { homeCards } from '../../../domain/verdict';
 import { useMatchData } from '../../hooks/useMatchData';
 import { useViewport } from '../../hooks/useViewport';
+import { useVote } from '../../hooks/useVote';
 import { cx } from '../../lib/cx';
 import { status } from '../../lib/status';
 import { loadPredictions } from '../../lib/storage';
@@ -11,6 +12,8 @@ import { Footer } from '../common/Footer';
 import { LoadFailed } from '../common/LoadFailed';
 import { Skeleton } from '../common/Skeleton';
 import { StatusBar } from '../common/StatusBar';
+import { VoteButton } from '../common/VoteButton';
+import { VoteSheet } from '../common/VoteSheet';
 import s from './HomePage.module.css';
 import { TeamCard } from './TeamCard';
 import { Z4Divider } from './Z4Divider';
@@ -20,6 +23,7 @@ import { Z4Divider } from './Z4Divider';
 export function HomePage() {
   const { raw, err, now, P } = useMatchData(null);
   const { width, mobile } = useViewport();
+  const vote = useVote();
   const real = useMemo(() => (P ? simulate(P, {}) : null), [P]);
   const hasPal = Object.keys(loadPredictions()).length > 0;
   const cards = P && real ? homeCards(P, real) : [];
@@ -88,6 +92,8 @@ export function HomePage() {
         )}
       </main>
       <Footer currentSlug={null} />
+      <VoteButton vote={vote} mobile={mobile} />
+      <VoteSheet vote={vote} mobile={mobile} />
     </div>
   );
 }

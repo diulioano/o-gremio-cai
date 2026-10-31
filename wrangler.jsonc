@@ -23,4 +23,16 @@
   // o único que consulta a football-data.org: todo minuto com jogo ao vivo, de hora em hora sem jogo
   // (ver specs/002-atualizacao-por-minuto)
   "triggers": { "crons": ["* * * * *"] },
+  // votação "quem você acha que cai?": votos e contagem (ver specs/003-votacao-rebaixados).
+  // O KV não serve: só 1.000 gravações/dia, já usadas pelo cron.
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "vaicair-votos",
+      "database_id": "69bac36b-8862-41c4-b9cc-671b82d45f07",
+      "migrations_dir": "migrations",
+    },
+  ],
+  // até 5 votos por minuto por IP (por local da Cloudflare); o IP só é usado aqui, nunca gravado
+  "ratelimits": [{ "name": "VOTE_LIMITER", "namespace_id": "3001", "simple": { "limit": 5, "period": 60 } }],
 }

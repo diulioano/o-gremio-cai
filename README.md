@@ -16,6 +16,16 @@ Simulador da reta final do Brasileirão Série A 2026: um SIM ou NÃO gigante pa
 
 Sem `FOOTBALL_DATA_TOKEN` em `.dev.vars`, o site usa dados de demonstração.
 
+## Banco da votação (D1)
+
+Os votos ficam no D1 `vaicair-votos` (binding `DB` em `wrangler.jsonc`), com o esquema em `migrations/`. Ver `specs/003-votacao-rebaixados`.
+
+- Local (uma vez, antes do `npm run dev`): `npx wrangler d1 migrations apply vaicair-votos --local`
+- Produção (antes do deploy que traz uma migração nova): `npx wrangler d1 migrations apply vaicair-votos --remote`
+- Conferir a contagem: `npx wrangler d1 execute vaicair-votos --remote --command "SELECT * FROM tally"`
+
+Os testes do Worker aplicam as migrações sozinhos num banco em memória.
+
 ## Estrutura
 
 ```text

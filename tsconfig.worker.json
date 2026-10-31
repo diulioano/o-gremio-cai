@@ -9,6 +9,7 @@
     "src/worker",
     "src/shared",
     "src/domain/live.ts",
+    "src/domain/votes.ts",
     "tests/worker",
     "tests/types/worker-contract.ts"
   ]

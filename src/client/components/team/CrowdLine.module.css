@@ -1,0 +1,38 @@
+/* Uma linha de 14 px, separada por um fio, abaixo do veredito, da % e dos botões (Claude Design: Votacao Torcida). */
+
+.line {
+  align-self: stretch;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-height: 44px;
+  margin-top: 14px;
+  padding-top: 6px;
+  border-top: 1px solid var(--surface-2);
+  font-size: 14px;
+  color: #c4ccd6;
+}
+
+.ico {
+  display: flex;
+  color: var(--accent);
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #8cc8ff;
+  font: 700 14px var(--body);
+  cursor: pointer;
+}
+
+.link:hover {
+  color: var(--text);
+}

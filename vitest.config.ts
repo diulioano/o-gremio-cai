@@ -1,5 +1,8 @@
 import { defineConfig } from 'vitest/config';
-import { cloudflareTest } from '@cloudflare/vitest-plugin';
+import { cloudflareTest, readD1Migrations } from '@cloudflare/vitest-plugin';
+
+// banco da votação nos testes: as mesmas migrações de produção, aplicadas em tests/worker/setup-d1.ts
+const migrations = await readD1Migrations('./migrations');
 
 export default defineConfig({
   test: {
@@ -15,10 +18,14 @@ export default defineConfig({
         plugins: [
           cloudflareTest({
             wrangler: { configPath: './wrangler.jsonc' },
-            miniflare: { bindings: { FOOTBALL_DATA_TOKEN: '' } },
+            miniflare: { bindings: { FOOTBALL_DATA_TOKEN: '', DEV_VOTES: '', TEST_MIGRATIONS: migrations } },
           }),
         ],
-        test: { name: 'worker', include: ['tests/worker/**/*.test.ts'] },
+        test: {
+          name: 'worker',
+          include: ['tests/worker/**/*.test.ts'],
+          setupFiles: ['./tests/worker/setup-d1.ts'],
+        },
       },
     ],
   },

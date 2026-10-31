@@ -1,20 +1,27 @@
 import { useMemo, useRef, useState } from 'preact/hooks';
 import { incompleteRounds } from '../../../domain/predictions';
 import { simulate } from '../../../domain/simulate';
+import { shareCard } from '../../../domain/share';
 import { verdict } from '../../../domain/verdict';
 import { TEAMS, type TeamSlug } from '../../../shared/teams';
 import { useFlipRows } from '../../hooks/useFlipRows';
 import { useMatchData } from '../../hooks/useMatchData';
 import { usePinnedBar } from '../../hooks/usePinnedBar';
 import { usePredictions } from '../../hooks/usePredictions';
+import { useShare } from '../../hooks/useShare';
 import { useViewport } from '../../hooks/useViewport';
+import { useVote } from '../../hooks/useVote';
 import { cx } from '../../lib/cx';
 import { status } from '../../lib/status';
 import ty from '../../styles/type.module.css';
 import { Footer } from '../common/Footer';
 import { StatusBar } from '../common/StatusBar';
+import { VoteButton } from '../common/VoteButton';
+import { VoteSheet } from '../common/VoteSheet';
+import { CrowdLine } from './CrowdLine';
 import { MatchesPanel } from './MatchesPanel';
 import { PinnedVerdictBar } from './PinnedVerdictBar';
+import { ShareSheet } from './ShareSheet';
 import { SimulationBadge, SimulationBanner } from './SimulationBanner';
 import { StandingsTable } from './StandingsTable';
 import s from './TeamPage.module.css';
@@ -41,6 +48,9 @@ export function TeamPage({ slug }: { slug: TeamSlug }) {
   const { pin, bandOut } = usePinnedBar(heroRef, rootRef, gid, mobile);
 
   const v = res && gid ? verdict(res, gid) : null;
+  const card = res && gid ? shareCard(res, gid, isSim) : null;
+  const share = useShare(team, slug, card);
+  const vote = useVote();
   const notFound = !!P && !gid;
   const failed = (err && !raw) || notFound;
   const state: VerdictState = failed ? 'failed' : !v ? 'loading' : v.yes ? 'yes' : 'no';
@@ -77,7 +87,15 @@ export function TeamPage({ slug }: { slug: TeamSlug }) {
           isSim && <SimulationBanner onBack={actions.clearAll} incomplete={incomplete} onGoRound={goRound} />
         }
       >
-        <VerdictDetails team={team} v={v} isSim={isSim} failed={err && !raw} notFound={notFound} />
+        <VerdictDetails
+          team={team}
+          v={v}
+          isSim={isSim}
+          failed={err && !raw}
+          notFound={notFound}
+          onShare={share.open}
+        />
+        {!failed && <CrowdLine team={team} vote={vote} />}
       </VerdictHero>
 
       <main class={cx(s.main, mobile && s.mobile, wide && s.wide)}>
@@ -111,8 +129,13 @@ export function TeamPage({ slug }: { slug: TeamSlug }) {
           color={v.yes ? 'var(--danger)' : 'var(--safe)'}
           width={width}
           mobile={mobile}
+          onShare={share.open}
         />
       )}
+
+      <ShareSheet share={share} team={team} sim={isSim} mobile={mobile} />
+      <VoteButton vote={vote} mobile={mobile} pin={v ? pin : null} />
+      <VoteSheet vote={vote} mobile={mobile} />
     </div>
   );
 }

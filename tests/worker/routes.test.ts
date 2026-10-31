@@ -40,3 +40,13 @@ describe('páginas', () => {
     expect(r.status).toBe(404);
   });
 });
+
+describe('/crest (proxy dos escudos para o card)', () => {
+  it.each(['/crest/png/abc', '/crest/gif/1782', '/crest/png/1782/x', '/crest/png/', '/crest/png/1772_small'])(
+    '%s: 404, não vira proxy aberto',
+    async (path) => {
+      const r = await get(`https://vaicair.diuliano.com${path}`);
+      expect(r.status).toBe(404);
+    },
+  );
+});

@@ -10,3 +10,10 @@ type Assert<T extends true> = T;
 export type SlimIsPayload = Assert<Equal<ReturnType<typeof slim>, DataPayload>>;
 // o corpo de /api/data é sempre um destes dois
 export type Body = DataPayload | DataError;
+
+// /api/votes: os corpos que o Worker monta são os do contrato (specs/003-votacao-rebaixados/contracts/api-votes.md)
+import type { VoteError, VoteState } from '../../src/shared/api';
+import type { crowdResult } from '../../src/domain/votes';
+// o resultado do domínio cabe direto no VoteState (é espalhado nele em src/worker/votes.ts)
+export type CrowdFitsState = Assert<ReturnType<typeof crowdResult> extends Partial<VoteState> ? true : false>;
+export type VotesBody = VoteState | VoteError;

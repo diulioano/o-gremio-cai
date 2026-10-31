@@ -1,0 +1,604 @@
+/* Gaveta da votação. Medidas do Claude Design (Votacao Torcida): linha 46 px, raio 12, escudo 28,
+   rodapé fixo com sombra para a lista rolar por baixo, barra de resultado 6 px. */
+
+.dialog {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  max-width: none;
+  max-height: none;
+  overflow: visible;
+}
+
+.dialog::backdrop {
+  background: rgba(0, 0, 0, 0.66);
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  font-family: var(--body);
+  transition: transform 0.2s ease-out;
+}
+
+/* celular: sobe de baixo, até 72 px do topo */
+.sheet {
+  inset: auto 0 0 0;
+  width: 100%;
+  margin: 0;
+}
+
+.sheet .panel {
+  height: calc(100svh - 72px);
+  border-radius: 24px 24px 0 0;
+  box-shadow: inset 0 1px 0 var(--line);
+  animation: sheetup 0.22s ease-out both;
+}
+
+@keyframes sheetup {
+  from {
+    transform: translateY(100%);
+  }
+}
+
+/* PC: painel lateral de 440 px à direita, a página continua visível à esquerda */
+.side {
+  inset: 0 0 0 auto;
+  width: min(440px, 100%);
+  height: 100%;
+  margin: 0;
+}
+
+.side .panel {
+  height: 100%;
+  box-shadow:
+    inset 1px 0 0 var(--line),
+    -30px 0 80px rgba(0, 0, 0, 0.5);
+  animation: sidein 0.22s ease-out both;
+}
+
+@keyframes sidein {
+  from {
+    transform: translateX(100%);
+  }
+}
+
+.top {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 20px 0;
+  touch-action: none;
+}
+
+.side .top {
+  padding: 28px 28px 0;
+  touch-action: auto;
+}
+
+.grip {
+  width: 40px;
+  height: 5px;
+  border-radius: 3px;
+  background: var(--line);
+}
+
+.head {
+  align-self: stretch;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.titles {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.badge {
+  align-self: flex-start;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  box-shadow: inset 0 0 0 1px var(--line);
+  color: #c4ccd6;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+}
+
+.title {
+  margin: 0;
+  font-family: var(--head);
+  font-weight: 900;
+  font-size: 24px;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+}
+
+.side .title {
+  font-size: 30px;
+}
+
+.sub {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--text-muted);
+  text-wrap: pretty;
+}
+
+.side .sub {
+  font-size: 15px;
+}
+
+.close {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: var(--surface-2);
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.close:hover {
+  background: var(--line);
+  color: var(--text);
+}
+
+.side .close {
+  width: 40px;
+  height: 40px;
+}
+
+/* parte do meio: rola por baixo do rodapé */
+.body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 16px 12px;
+}
+
+.side .body {
+  padding: 18px 28px 12px;
+}
+
+/* caixa de tamanho fixo: escudo alto (Vitória, Grêmio) encolhe para caber, sem estourar nem desalinhar a linha */
+.crest {
+  flex: none;
+  display: block;
+}
+
+.crest img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.out {
+  height: 36px;
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 12px;
+  border-radius: 10px;
+  background: #0c1117;
+  color: var(--text-muted);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+/* escudo apagado: ela está fora da votação */
+.outCrest {
+  display: flex;
+  opacity: 0.6;
+  filter: grayscale(0.6);
+}
+
+.outName {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.outTag {
+  height: 22px;
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  border-radius: 6px;
+  background: var(--surface-2);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.pick {
+  height: 46px;
+  flex: none;
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) 26px;
+  align-items: center;
+  gap: 12px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 12px;
+  background: #141a23;
+  box-shadow: inset 0 0 0 1px #1d2633;
+  color: var(--text);
+  font: 700 16px var(--body);
+  text-align: left;
+  cursor: pointer;
+}
+
+.pick:disabled {
+  cursor: default;
+}
+
+.pick:hover:not(:disabled):not(.on) {
+  background: var(--surface-2);
+}
+
+.on {
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  box-shadow: inset 0 0 0 2px var(--accent);
+}
+
+.name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.box {
+  width: 26px;
+  height: 26px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 2px #3a4757;
+  color: var(--bg);
+}
+
+.on .box {
+  background: var(--accent);
+  box-shadow: none;
+}
+
+/* rodapé fixo, com sombra para a lista rolar por baixo */
+.foot {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px 20px calc(20px + env(safe-area-inset-bottom));
+  background: var(--surface);
+  box-shadow:
+    0 -1px 0 var(--line),
+    0 -18px 24px var(--surface);
+}
+
+.side .foot {
+  padding: 16px 28px 24px;
+}
+
+.resultFoot {
+  gap: 4px;
+  font-size: 15px;
+}
+
+.counterRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.counter {
+  font-weight: 900;
+  font-size: 20px;
+  letter-spacing: -0.02em;
+  color: var(--text-muted);
+}
+
+.ready {
+  color: var(--text);
+}
+
+.muted {
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--text-muted);
+}
+
+.note {
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--text-muted);
+}
+
+.error {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(255, 176, 32, 0.12);
+  box-shadow: inset 0 0 0 1px rgba(255, 176, 32, 0.35);
+  font-size: 14px;
+  line-height: 1.4;
+  color: #ffd38a;
+}
+
+.bang {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--warn);
+  color: var(--bg);
+}
+
+.today {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 12px;
+  border-radius: 10px;
+  background: var(--surface-2);
+  box-shadow: inset 0 0 0 1px var(--line);
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.moon {
+  flex: none;
+  display: flex;
+  color: var(--text-muted);
+}
+
+.confirm {
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--text);
+  color: var(--bg);
+  font: 800 17px var(--body);
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+
+.confirm:hover:not(:disabled) {
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(242, 245, 248, 0.18);
+}
+
+.confirm:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.confirm:disabled {
+  background: var(--surface-2);
+  color: #5a6573;
+  cursor: default;
+}
+
+.confirm.sending:disabled {
+  background: #c4ccd6;
+  color: var(--bg);
+}
+
+.spinner {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 3px solid var(--text-muted);
+  border-top-color: var(--bg);
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* resultado */
+.mine {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 14px;
+  margin: 2px 4px 10px;
+  border-radius: 12px;
+  background: var(--surface-2);
+}
+
+.kicker {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  color: var(--text-muted);
+}
+
+.chips {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  height: 32px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0 12px 0 6px;
+  border-radius: 999px;
+  background: var(--surface);
+  box-shadow: inset 0 0 0 1.5px var(--accent);
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.results {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr) 48px;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 10px;
+  border-radius: 10px;
+}
+
+.myRow {
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+}
+
+.rowMid {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.rowName {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.myRow .rowName {
+  font-weight: 800;
+}
+
+.myTag {
+  flex: none;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: #8cc8ff;
+}
+
+.track {
+  display: block;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--surface-2);
+  overflow: hidden;
+}
+
+.fill {
+  display: block;
+  height: 100%;
+  border-radius: 3px;
+  background: var(--text-muted);
+}
+
+.myRow .fill {
+  background: var(--accent);
+}
+
+.pct {
+  text-align: right;
+  font-size: 17px;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+
+.starting {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 32px 24px 48px;
+  text-align: center;
+}
+
+.startBars {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  height: 48px;
+}
+
+.startBars span {
+  width: 12px;
+  border-radius: 3px;
+  background: var(--line);
+}
+
+.startTitle {
+  font-weight: 900;
+  font-size: 22px;
+  letter-spacing: -0.02em;
+}
+
+/* só no `npm run dev` */
+.devAgain {
+  align-self: flex-start;
+  margin-top: 8px;
+  min-height: 36px;
+  padding: 0 14px;
+  border: 1px dashed var(--warn);
+  border-radius: 999px;
+  background: none;
+  color: var(--warn);
+  font: 700 13px var(--body);
+  cursor: pointer;
+}
+
+.starting .muted {
+  font-size: 15px;
+  line-height: 1.45;
+  text-wrap: pretty;
+}

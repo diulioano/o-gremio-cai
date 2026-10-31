@@ -50,3 +50,42 @@ export interface DataPayload {
 export interface DataError {
   error: string;
 }
+
+// Contrato de /api/votes: o Worker produz (src/worker/votes.ts), o cliente consome.
+// Ver specs/003-votacao-rebaixados/contracts/api-votes.md.
+
+export interface VoteRow {
+  /** id do time na football-data */
+  id: number;
+  votes: number;
+  /** % dos votantes que escolheu o time (arredondada) */
+  pct: number;
+}
+
+export interface VoteState {
+  /** a votação ainda aceita votos */
+  open: boolean;
+  /** epoch ms do primeiro jogo da última rodada; null sem dados de jogos */
+  closesAt: number | null;
+  /** votantes até agora */
+  total: number;
+  /** só para quem já votou ou com a votação fechada; ausente com total < 10 */
+  rows?: VoteRow[];
+  /** total < 10: mostrar "votação começando" (só para quem pode ver o resultado) */
+  warmingUp?: true;
+  /** os 3 do visitante, quando ele já votou */
+  mine?: [number, number, number];
+}
+
+export interface VoteRequest {
+  voter: string;
+  picks: [number, number, number];
+}
+
+export interface VoteError {
+  error: 'invalid' | 'forbidden' | 'closed' | 'rate-limited' | 'daily-cap' | 'unavailable';
+  /** pt-BR, pronto para a tela */
+  message: string;
+  /** só no 410: o resultado final */
+  state?: VoteState;
+}

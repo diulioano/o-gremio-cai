@@ -2,6 +2,7 @@ import type { Verdict } from '../../../domain/verdict';
 import { ask, type Team } from '../../../shared/teams';
 import type { Pin } from '../../hooks/usePinnedBar';
 import { cx } from '../../lib/cx';
+import { Icon } from '../common/Icon';
 import s from './PinnedVerdictBar.module.css';
 
 interface Props {
@@ -13,10 +14,11 @@ interface Props {
   color: string;
   width: number;
   mobile: boolean;
+  onShare: () => void;
 }
 
 /** Barra fixa com o veredito quando o banner sai da tela; toca para voltar ao topo. */
-export function PinnedVerdictBar({ pin, team, v, crest, color, width, mobile }: Props) {
+export function PinnedVerdictBar({ pin, team, v, crest, color, width, mobile, onShare }: Props) {
   const word = v.yes ? 'SIM' : 'NÃO';
   return (
     <div
@@ -52,9 +54,13 @@ export function PinnedVerdictBar({ pin, team, v, crest, color, width, mobile }: 
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }}
       >
-        <span class={s.cai}>Cai?</span>
+        {!mobile && <span class={s.cai}>Cai?</span>}
         <span class={s.word}>{word}</span>
       </a>
+      <button class={s.share} aria-label={mobile ? 'Compartilhar' : undefined} onClick={onShare}>
+        <Icon name="share" size={mobile ? '20px' : '18px'} />
+        {!mobile && 'Compartilhar'}
+      </button>
     </div>
   );
 }

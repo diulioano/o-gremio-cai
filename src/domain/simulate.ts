@@ -17,6 +17,8 @@ export interface SimulationResult {
   pct: Record<number, number>;
   /** decidido matematicamente: salvo, rebaixado ou ainda em aberto */
   dec: Record<number, Decision>;
+  /** sem jogos para sortear (fim do campeonato ou tudo palpitado): a tabela exibida é a final */
+  final: boolean;
 }
 
 /** Tabela com os palpites aplicados (só em jogos futuros) e os jogos que sobram para sortear. */
@@ -84,7 +86,7 @@ export function simulate(P: Prepared, pal: Predictions, rng: () => number = mulb
       pct[t.id] = out ? 1 : 0;
       dec[t.id] = out ? 'reb' : 'salvo';
     });
-    return { table, pct, dec };
+    return { table, pct, dec, final: true };
   }
 
   const rel = new Float64Array(n);
@@ -138,5 +140,5 @@ export function simulate(P: Prepared, pal: Predictions, rng: () => number = mulb
     pct[id] = (rel[i] as number) / N_SIM;
     dec[id] = decide(i, pts0, left, cut);
   });
-  return { table, pct, dec };
+  return { table, pct, dec, final: false };
 }

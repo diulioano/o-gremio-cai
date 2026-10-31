@@ -1,5 +1,6 @@
 import type { Verdict } from '../../../domain/verdict';
 import type { Team } from '../../../shared/teams';
+import { Icon } from '../common/Icon';
 import { LoadFailed } from '../common/LoadFailed';
 import { Skeleton } from '../common/Skeleton';
 import s from './VerdictDetails.module.css';
@@ -12,15 +13,22 @@ interface Props {
   failed: boolean;
   /** os dados chegaram, mas o time não está neles */
   notFound: boolean;
+  /** abre a prévia do card de compartilhar */
+  onShare: () => void;
 }
 
 /** Embaixo do SIM/NÃO: selo (salvo/rebaixado), a % e a posição, ou o aviso de erro. */
-export function VerdictDetails({ team, v, isSim, failed, notFound }: Props) {
+export function VerdictDetails({ team, v, isSim, failed, notFound, onShare }: Props) {
   const color = v?.yes ? 'var(--danger)' : 'var(--safe)';
   return (
     <>
       {v?.badge && (
-        <div class={s.badge} style={{ '--badge': v.badge === 'REBAIXADO' ? 'var(--danger)' : 'var(--safe)' }}>
+        <div
+          class={s.badge}
+          style={{
+            '--badge': v.badge === 'REBAIXADO' || v.badge === 'CAIU' ? 'var(--danger)' : 'var(--safe)',
+          }}
+        >
           {v.badge}
         </div>
       )}
@@ -56,12 +64,20 @@ export function VerdictDetails({ team, v, isSim, failed, notFound }: Props) {
       )}
 
       {!failed && !notFound && (
-        <a href="#classificacao" class={s.down}>
-          ver tabela
-          <span aria-hidden="true" class={s.arrow}>
-            ↓
-          </span>
-        </a>
+        <div class={s.actions}>
+          {v && (
+            <button class={s.share} onClick={onShare}>
+              <Icon name="share" size="20px" />
+              Compartilhar
+            </button>
+          )}
+          <a href="#classificacao" class={s.down}>
+            ver tabela
+            <span aria-hidden="true" class={s.arrow}>
+              ↓
+            </span>
+          </a>
+        </div>
       )}
     </>
   );
