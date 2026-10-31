@@ -1,5 +1,6 @@
 import { isTeamSlug } from '../shared/teams';
 import { getData } from './data';
+import { refresh } from './refresh';
 import { teamPage } from './team-page';
 
 const SITE = 'https://vaicair.diuliano.com';
@@ -15,5 +16,8 @@ export default {
     const slug = url.pathname.replace(/^\/|\/$/g, '').toLowerCase();
     if (isTeamSlug(slug)) return teamPage(req, env, slug);
     return env.ASSETS.fetch(req);
+  },
+  scheduled(controller, env, ctx) {
+    ctx.waitUntil(refresh(env, controller.scheduledTime));
   },
 } satisfies ExportedHandler<Env>;

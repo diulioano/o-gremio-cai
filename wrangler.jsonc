@@ -20,4 +20,7 @@
     "run_worker_first": ["/*", "!/*.*"],
   },
   "kv_namespaces": [{ "binding": "CACHE" }],
+  // o único que consulta a football-data.org: todo minuto com jogo ao vivo, de hora em hora sem jogo
+  // (ver specs/002-atualizacao-por-minuto)
+  "triggers": { "crons": ["* * * * *"] },
 }

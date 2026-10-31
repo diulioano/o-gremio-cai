@@ -31,7 +31,7 @@ A resposta vem em um veredito binário e provocador (SIM/NÃO) baseado na tabela
 
 ## Capabilities and Constraints
 
-- Cloudflare Worker (`src/worker/`) serve a página e faz proxy da football-data.org (competição `BSA`). O token fica como secret e o cache em KV dura 1 hora. Sem o token, o site usa dados de demonstração (`src/worker/demo.ts`).
+- Cloudflare Worker (`src/worker/`) serve a página e faz proxy da football-data.org (competição `BSA`). O token fica como secret. Um cron de minuto em minuto é o único que consulta a fonte: todo minuto com jogo ao vivo, de hora em hora sem jogo, e grava no KV só quando os dados mudam (para caber no plano grátis; ver specs/002-atualizacao-por-minuto). A página aberta busca de novo a cada minuto só com jogo ao vivo e a aba visível. Sem o token, o site usa dados de demonstração (`src/worker/demo.ts`).
 - Front-end em Preact + TypeScript, componentizado (`src/client/`), com build pelo Vite. A lógica de tabela, simulação e veredito fica em `src/domain/`, separada da interface e testada.
 - Banner: SIM se o time está no Z4 (17º–20º) da tabela exibida (real ou simulada), NÃO se está fora. Abaixo, menor: % de queda e posição.
 - Simulador: Monte Carlo (5000 rodadas) com força de ataque e defesa tirada dos gols do campeonato, mais mando de campo e placares por Poisson. Calcula a % de queda de todos os times.

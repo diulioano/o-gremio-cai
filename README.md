@@ -22,7 +22,7 @@ Sem `FOOTBALL_DATA_TOKEN` em `.dev.vars`, o site usa dados de demonstração.
 src/
 ├── shared/   lista de times e formato de /api/data; usado pelo Worker e pelo cliente
 ├── domain/   tabela, simulação (Monte Carlo), palpites e veredito; funções puras, testadas
-├── worker/   Cloudflare Worker: rotas, redirects e /api/data com cache de 1 h no KV
+├── worker/   Cloudflare Worker: rotas, redirects, /api/data (lê o KV) e o cron que atualiza o KV (~1 min com jogo, 1 h sem)
 └── client/   Preact: hooks, componentes (common, home, team) e estilos (CSS Modules)
 ```
 

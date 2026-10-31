@@ -1,7 +1,25 @@
-// GET /api/data: specs/001-migracao-framework-web/contracts/api-data.md.
+// GET /api/data: specs/001-migracao-framework-web/contracts/api-data.md e o delta em
+// specs/002-atualizacao-por-minuto/contracts/api-data.md.
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { CACHE_KEY, getData, slim, type FdResponse } from '../../src/worker/data';
-import type { DataError, DataPayload } from '../../src/shared/api';
+import type { DataError, DataPayload, SlimMatch } from '../../src/shared/api';
+
+const MIN = 60_000;
+const HOUR = 60 * MIN;
+/** jogo em andamento: deixa a janela ao vivo aberta em qualquer horário */
+function liveMatch(): SlimMatch {
+  const t = { id: 1, name: 'T', tla: 'T', crest: null };
+  return {
+    id: 9,
+    md: 33,
+    status: 'IN_PLAY',
+    utc: new Date().toISOString(),
+    h: t,
+    a: { ...t, id: 2 },
+    hs: 0,
+    as: 0,
+  };
+}
 
 const fd: FdResponse = {
   matches: [
@@ -50,31 +68,49 @@ describe('getData', () => {
     expect(body.matches).toHaveLength(380);
   });
 
-  it('cópia do KV com menos de 1 h: devolve sem buscar', async () => {
+  it('com cópia no KV: devolve sem consultar a fonte', async () => {
     const spy = vi.spyOn(globalThis, 'fetch');
-    const cached = { fetchedAt: Date.now() - 10 * 60_000, matches: [] };
+    const cached = { fetchedAt: Date.now() - 10 * MIN, matches: [] };
     const r = await getData(fakeEnv('t', cached).env, ctx);
     expect(await r.json()).toEqual(cached);
     expect(spy).not.toHaveBeenCalled();
   });
 
-  it('cópia vencida: busca, enxuga e grava no KV', async () => {
-    vi.spyOn(globalThis, 'fetch').mockResolvedValue(Response.json(fd));
-    const { env, store } = fakeEnv('t', { fetchedAt: 0, matches: [] });
+  it('fora de jogo: só fica desatualizada depois de 3 h sem conferir', async () => {
+    const ok = { fetchedAt: Date.now() - 2 * HOUR, matches: [] };
+    expect(await (await getData(fakeEnv('t', ok).env, ctx)).json()).toEqual(ok);
+    const old = { fetchedAt: Date.now() - 3 * HOUR - MIN, matches: [] };
+    expect(await (await getData(fakeEnv('t', old).env, ctx)).json()).toEqual({ ...old, stale: true });
+  });
+
+  it('ao vivo: fica desatualizada depois de 15 min sem conferir', async () => {
+    const matches = [liveMatch()];
+    const ok = { fetchedAt: Date.now() - 14 * MIN, matches };
+    expect(await (await getData(fakeEnv('t', ok).env, ctx)).json()).toEqual(ok);
+    const old = { fetchedAt: Date.now() - 16 * MIN, matches };
+    expect(await (await getData(fakeEnv('t', old).env, ctx)).json()).toEqual({ ...old, stale: true });
+  });
+
+  it('cache-control: 30 s com jogo ao vivo, 300 s fora', async () => {
+    const live = { fetchedAt: Date.now(), matches: [liveMatch()] };
+    const idle = { fetchedAt: Date.now(), matches: [] };
+    const rl = await getData(fakeEnv('t', live).env, ctx);
+    const ri = await getData(fakeEnv('t', idle).env, ctx);
+    expect(rl.headers.get('cache-control')).toBe('public, max-age=30');
+    expect(ri.headers.get('cache-control')).toBe('public, max-age=300');
+  });
+
+  it('KV vazio: busca uma vez, enxuga e grava', async () => {
+    const spy = vi.spyOn(globalThis, 'fetch').mockResolvedValue(Response.json(fd));
+    const { env, store } = fakeEnv('t');
     const body = await (await getData(env, ctx)).json<DataPayload>();
     await Promise.all(waits);
+    expect(spy).toHaveBeenCalledTimes(1);
     expect(body.matches[0]?.h.name).toBe('Grêmio');
     expect(JSON.parse(store.get(CACHE_KEY) ?? '')).toEqual(body);
   });
 
-  it('API falha com cópia: devolve a cópia marcada stale', async () => {
-    vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response('x', { status: 500 }));
-    const cached = { fetchedAt: 0, matches: [] };
-    const body = await (await getData(fakeEnv('t', cached).env, ctx)).json<DataPayload>();
-    expect(body).toEqual({ ...cached, stale: true });
-  });
-
-  it('API falha sem cópia: 502', async () => {
+  it('KV vazio e fonte falha: 502', async () => {
     vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response('x', { status: 429 }));
     const r = await getData(fakeEnv('t').env, ctx);
     expect(r.status).toBe(502);

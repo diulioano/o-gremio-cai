@@ -38,12 +38,12 @@ export interface SlimMatch {
 }
 
 export interface DataPayload {
-  /** epoch ms */
+  /** epoch ms: última vez que a fonte foi conferida e o KV gravado (mudança ou pulso de 5/60 min) */
   fetchedAt: number;
   matches: SlimMatch[];
   /** sem FOOTBALL_DATA_TOKEN */
   demo?: true;
-  /** a API falhou: cópia vencida do KV */
+  /** a cópia passou de 15 min (ao vivo) ou 3 h (fora de jogo) sem ser conferida: a fonte deve estar falhando */
   stale?: true;
 }
 

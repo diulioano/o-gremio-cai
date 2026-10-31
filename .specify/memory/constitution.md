@@ -21,7 +21,7 @@ As mesmas regras valem para todos os times. O site é usado principalmente no ce
 
 ## Restrições
 
-- Hospedagem: Cloudflare Workers, com cache de 1 hora dos dados da football-data.org (competição `BSA`).
+- Hospedagem: Cloudflare Workers, no plano grátis. Os dados da football-data.org (competição `BSA`) são conferidos a cada ~1 minuto durante jogos e a cada 1 hora fora deles (spec 002), sempre dentro dos limites gratuitos da fonte e da hospedagem.
 - Vida útil: temporada 2026. Preferir simplicidade a infraestrutura para o longo prazo.
 - Não inventar números de uso, depoimentos nem imprensa.
 
@@ -29,4 +29,4 @@ As mesmas regras valem para todos os times. O site é usado principalmente no ce
 
 Esta constituição prevalece sobre preferências pontuais. Mudanças são feitas junto com as specs que as motivam, com aumento de versão (MAJOR: remove/redefine princípio; MINOR: adiciona princípio; PATCH: redação).
 
-**Version**: 0.1.0 | **Ratified**: 2026-10-30 | **Last Amended**: 2026-10-30
+**Version**: 0.1.1 | **Ratified**: 2026-10-30 | **Last Amended**: 2026-10-30
