@@ -50,7 +50,7 @@ export const findId = (
   ids: readonly number[],
   teams: Record<number, TeamInfo>,
   t: Pick<Team, 'id' | 'code'>,
-): number | null => (ids.find((id) => id === t.id) ?? ids.find((id) => teams[id]?.code === t.code)) ?? null;
+): number | null => ids.find((id) => id === t.id) ?? ids.find((id) => teams[id]?.code === t.code) ?? null;
 
 const K = 5;
 

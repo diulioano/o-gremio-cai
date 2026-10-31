@@ -41,9 +41,9 @@ export function Footer({ currentSlug }: Props) {
         . Sem vínculo com clubes, CBF ou patrocinadores.
       </span>
       <span class={s.method}>
-        A % de queda vem de {N_SIM.toLocaleString('pt-BR')} simulações dos jogos restantes. Cada placar é sorteado
-        pela força de ataque e defesa dos times no campeonato, com vantagem para o mandante, respeitando seus
-        palpites.
+        A % de queda vem de {N_SIM.toLocaleString('pt-BR')} simulações dos jogos restantes. Cada placar é
+        sorteado pela força de ataque e defesa dos times no campeonato, com vantagem para o mandante,
+        respeitando seus palpites.
       </span>
     </footer>
   );

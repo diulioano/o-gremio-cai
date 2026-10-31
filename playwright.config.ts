@@ -16,10 +16,18 @@ export default defineConfig({
   },
   expect: { toHaveScreenshot: { maxDiffPixelRatio: 0.01 } },
   projects: [
-    { name: 'mobile', use: { ...devices['Pixel 7'], viewport: { width: 390, height: 844 }, browserName: 'chromium' } },
+    {
+      name: 'mobile',
+      use: { ...devices['Pixel 7'], viewport: { width: 390, height: 844 }, browserName: 'chromium' },
+    },
     { name: 'desktop', use: { ...devices['Desktop Chrome'], viewport: { width: 1440, height: 900 } } },
   ],
   webServer: external
     ? undefined
-    : { command: 'npm run build && npm run preview -- --port 8787 --strictPort', url: 'http://localhost:8787', reuseExistingServer: true, timeout: 180_000 },
+    : {
+        command: 'npm run build && npm run preview -- --port 8787 --strictPort',
+        url: 'http://localhost:8787',
+        reuseExistingServer: true,
+        timeout: 180_000,
+      },
 });

@@ -67,10 +67,7 @@ export function VerdictHero({ heroRef, team, slug, state, mobile, banner, childr
     <section ref={heroRef} class={cx(s.hero, mobile && s.mobile)}>
       <div aria-hidden="true" class={cx(s.layer, s.stripes)} style={{ background: team.bg }}></div>
       <div aria-hidden="true" class={cx(s.layer, s.glow, s.glowDanger, state === 'yes' && s.on)}></div>
-      <div
-        aria-hidden="true"
-        class={cx(s.layer, s.glow, s.glowSafe, state === 'no' && s.on)}
-      ></div>
+      <div aria-hidden="true" class={cx(s.layer, s.glow, s.glowSafe, state === 'no' && s.on)}></div>
       <div aria-hidden="true" class={s.fade}></div>
 
       {banner}

@@ -5,7 +5,11 @@ export default defineConfig({
   test: {
     projects: [
       {
-        test: { name: 'domain', environment: 'node', include: ['tests/domain/**/*.test.ts', 'tests/structure.test.ts'] },
+        test: {
+          name: 'domain',
+          environment: 'node',
+          include: ['tests/domain/**/*.test.ts', 'tests/structure.test.ts'],
+        },
       },
       {
         plugins: [

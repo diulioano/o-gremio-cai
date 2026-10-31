@@ -9,7 +9,8 @@ export const DATA_KEY = 'gremiocai-dados-v1';
 export type { Prediction, Predictions };
 
 const isGoal = (n: unknown): n is number => Number.isInteger(n) && (n as number) >= 0 && (n as number) <= 9;
-const isObject = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null && !Array.isArray(v);
+const isObject = (v: unknown): v is Record<string, unknown> =>
+  typeof v === 'object' && v !== null && !Array.isArray(v);
 
 function read(key: string): unknown {
   try {

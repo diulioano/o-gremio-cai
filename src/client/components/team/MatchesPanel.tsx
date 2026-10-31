@@ -27,9 +27,7 @@ export function MatchesPanel({ P, round, onRound, predictions, actions, mobile, 
   // jogos do time da página primeiro, depois por horário
   const roundGames =
     P && round != null
-      ? (P.rounds[round] ?? [])
-          .slice()
-          .sort((x, y) => isSelf(y) - isSelf(x) || x.utc.localeCompare(y.utc))
+      ? (P.rounds[round] ?? []).slice().sort((x, y) => isSelf(y) - isSelf(x) || x.utc.localeCompare(y.utc))
       : [];
   const futAll = P ? P.matches.filter((g) => g.status === 'fut') : [];
   const hasAuto = futAll.some((g) => predictions[String(g.id)]?.auto);
@@ -37,7 +35,11 @@ export function MatchesPanel({ P, round, onRound, predictions, actions, mobile, 
   const roundHasPicks = roundGames.some((g) => predictions[String(g.id)]);
 
   return (
-    <section id="jogos" aria-label="Jogos por rodada" class={cx(s.section, mobile && s.mobile, wide && s.wide)}>
+    <section
+      id="jogos"
+      aria-label="Jogos por rodada"
+      class={cx(s.section, mobile && s.mobile, wide && s.wide)}
+    >
       <div class={ty.sectionHeader}>
         <h2 class={cx(ty.h2, mobile && ty.h2Mobile)}>Jogos</h2>
         <span class={ty.note}>Palpite = simule o resultado</span>
@@ -75,9 +77,12 @@ export function MatchesPanel({ P, round, onRound, predictions, actions, mobile, 
           <div role="alert" class={s.missing}>
             <span class={s.missingText}>
               <strong class={s.warn}>
-                <Icon name="warn" /> {roundMissing > 1 ? 'Faltam' : 'Falta'} {games(roundMissing)} nesta rodada.
+                <Icon name="warn" /> {roundMissing > 1 ? 'Faltam' : 'Falta'} {games(roundMissing)} nesta
+                rodada.
               </strong>{' '}
-              <span class={s.muted}>A tabela só conta os jogos com palpite, então ela fica desequilibrada.</span>
+              <span class={s.muted}>
+                A tabela só conta os jogos com palpite, então ela fica desequilibrada.
+              </span>
             </span>
             <button
               class={s.drawMissing}

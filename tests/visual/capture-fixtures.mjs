@@ -16,16 +16,24 @@ const page = await browser.newPage();
 await page.route('**/api/data', (r) => r.fulfill({ json: payload }));
 await page.goto(BASE + '/gremio');
 await page.waitForFunction(() => typeof window.compute === 'function');
-const expected = await page.evaluate(({ payload, palpites }) => {
-  const P = window.prepare(payload);
-  const pick = (r) => ({
-    table: r.table.map((t) => t.id),
-    pts: Object.fromEntries(r.table.map((t) => [t.id, t.pts])),
-    pct: r.pct,
-    dec: r.dec,
-  });
-  return { gid: P.gid, current: P.current, real: pick(window.compute(P, {})), comPalpites: pick(window.compute(P, palpites)) };
-}, { payload, palpites });
+const expected = await page.evaluate(
+  ({ payload, palpites }) => {
+    const P = window.prepare(payload);
+    const pick = (r) => ({
+      table: r.table.map((t) => t.id),
+      pts: Object.fromEntries(r.table.map((t) => [t.id, t.pts])),
+      pct: r.pct,
+      dec: r.dec,
+    });
+    return {
+      gid: P.gid,
+      current: P.current,
+      real: pick(window.compute(P, {})),
+      comPalpites: pick(window.compute(P, palpites)),
+    };
+  },
+  { payload, palpites },
+);
 writeFileSync('tests/domain/fixtures/demo-expected.json', JSON.stringify(expected, null, 1));
 console.log('gid', expected.gid, 'rodada', expected.current, 'times', expected.real.table.length);
 await browser.close();

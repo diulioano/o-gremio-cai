@@ -221,25 +221,25 @@ Projeto único na raiz: `src/shared`, `src/domain`, `src/worker`, `src/client`, 
 
 ### Tests for User Story 2 ⚠️
 
-- [ ] T059 [P] [US2] Criar `tests/domain/teams.test.ts`:
+- [X] T059 [P] [US2] Criar `tests/domain/teams.test.ts`:
   - **Unicidade**: slugs, ids e códigos únicos.
   - **Formato**: `art ∈ {'O','A'}`; `ask()` gera "O Grêmio cai?".
   - **Cor**: nenhum `accent` pode ser vermelho ou verde (converter hex→HSL e falhar se a saturação passar de 0.35 e a matiz estiver em [345°,15°] ou [90°,160°]).
   - **Escudo**: cada slug tem `public/<slug>.svg`.
-- [ ] T060 [P] [US2] Criar `tests/structure.test.ts` (projeto `domain`):
+- [X] T060 [P] [US2] Criar `tests/structure.test.ts` (projeto `domain`):
   - **Tamanho**: nenhum arquivo em `src/client/**/*.tsx` passa de 200 linhas (SC-004).
   - **Fonte única**: a string `'Grêmio'` e o id `1767` aparecem como dado só em `src/shared/teams.ts`, desconsiderando testes, fixtures e `src/worker/demo.ts` (SC-005).
   - **Arquivos antigos**: `public/app.js`, `public/index.html`, `src/index.js` e `src/demo.js` não existem (apagados em T026 e T028).
-- [ ] T061 [P] [US2] Criar as checagens de tipo do contrato (FR-011), verificadas pelo `npm run typecheck` (`tsc -b`):
+- [X] T061 [P] [US2] Criar as checagens de tipo do contrato (FR-011), verificadas pelo `npm run typecheck` (`tsc -b`):
   - `tests/types/worker-contract.ts` (no tsconfig do Worker): com um helper `type Equal<A, B>`, afirmar que `ReturnType<typeof slim>` é igual a `DataPayload` e que o corpo de `getData` é `DataPayload | DataError`.
   - `tests/types/client-contract.ts` (no tsconfig do cliente): afirmar que o `raw` de `useMatchData` e o retorno de `loadCachedData` são `DataPayload | null`.
   - **Prova**: mudar temporariamente um campo em `src/shared/api.ts` e confirmar que o `typecheck` falha; desfazer.
 
 ### Implementation for User Story 2
 
-- [ ] T062 [US2] Conferir que o Worker (`src/worker/index.ts`, `team-page.ts`) e o cliente (`main.tsx`, `Footer.tsx`, `HomePage.tsx`) leem os times **só** de `src/shared/teams.ts`. Remover qualquer mapa local de slugs que tenha sobrado do port.
-- [ ] T063 [US2] Rodar `npm run lint` e corrigir todas as violações (inclusive `react-hooks/exhaustive-deps`: a dependência `palKey` de `public/app.js:331-333` vira dependência direta de `predictions`). Rodar `npm run format` e commitar.
-- [ ] T064 [US2] Criar `README.md`. Seções:
+- [X] T062 [US2] Conferir que o Worker (`src/worker/index.ts`, `team-page.ts`) e o cliente (`main.tsx`, `Footer.tsx`, `HomePage.tsx`) leem os times **só** de `src/shared/teams.ts`. Remover qualquer mapa local de slugs que tenha sobrado do port.
+- [X] T063 [US2] Rodar `npm run lint` e corrigir todas as violações (inclusive `react-hooks/exhaustive-deps`: a dependência `palKey` de `public/app.js:331-333` vira dependência direta de `predictions`). Rodar `npm run format` e commitar.
+- [X] T064 [US2] Criar `README.md`. Seções:
   - **Visão geral**: o que é o site, com link para `PRODUCT.md`.
   - **Comandos**: `dev`, `build`, `check`, `test`, `test:visual` e `deploy`.
   - **Estrutura de pastas**: `shared`, `domain`, `worker` e `client`, com a regra de fronteira de cada um.

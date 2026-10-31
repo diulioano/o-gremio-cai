@@ -40,14 +40,16 @@ export function HomePage() {
           Quem vai <span class={s.danger}>cair?</span>
         </h1>
         <p class={s.lead}>
-          A chance de cada time da briga contra o rebaixamento cair no Brasileirão. Escolha o seu para ver a tabela e
-          simular os jogos que faltam.
+          A chance de cada time da briga contra o rebaixamento cair no Brasileirão. Escolha o seu para ver a
+          tabela e simular os jogos que faltam.
         </p>
       </section>
       <main class={s.main}>
         <div class={cx(ty.sectionHeader, s.header)}>
           <h2 class={cx(ty.h2, mobile && ty.h2Mobile)}>Na briga</h2>
-          {raw && <span class={ty.note}>{hasPal ? 'Tabela real, sem os seus palpites' : 'Tabela atual'}</span>}
+          {raw && (
+            <span class={ty.note}>{hasPal ? 'Tabela real, sem os seus palpites' : 'Tabela atual'}</span>
+          )}
         </div>
         {err && !raw ? (
           <LoadFailed msg="Não deu para carregar a tabela." />

@@ -55,17 +55,18 @@ export function fill(
   return out;
 }
 
-export function clear(p: Predictions, id: number): Predictions {
-  const out = { ...p };
-  delete out[key(id)];
-  return out;
-}
+const without = (p: Predictions, ids: readonly number[]): Predictions => {
+  const drop = new Set(ids.map(key));
+  return Object.fromEntries(Object.entries(p).filter(([k]) => !drop.has(k)));
+};
 
-export function clearRound(p: Predictions, games: readonly Match[]): Predictions {
-  const out = { ...p };
-  for (const g of games) delete out[key(g.id)];
-  return out;
-}
+export const clear = (p: Predictions, id: number): Predictions => without(p, [id]);
+
+export const clearRound = (p: Predictions, games: readonly Match[]): Predictions =>
+  without(
+    p,
+    games.map((g) => g.id),
+  );
 
 export const predictionFor = (p: Predictions, g: Match): Prediction | undefined =>
   g.status === 'fut' ? p[key(g.id)] : undefined;

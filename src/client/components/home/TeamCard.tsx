@@ -55,7 +55,11 @@ export function TeamCard({ c, big, poster, mobile }: Props) {
       aria-label={`${ask(c.t)} ${c.yes ? 'Sim' : 'Não'}. ${c.pos}º lugar, ${c.label} de chance de cair`}
       style={vars}
     >
-      <div aria-hidden="true" class={s.stripes} style={{ opacity: big ? 0.09 : 0.06, background: c.t.bg }}></div>
+      <div
+        aria-hidden="true"
+        class={s.stripes}
+        style={{ opacity: big ? 0.09 : 0.06, background: c.t.bg }}
+      ></div>
       <div class={s.crest}>
         <div
           aria-hidden="true"
@@ -70,7 +74,8 @@ export function TeamCard({ c, big, poster, mobile }: Props) {
         <span class={cx(ty.head, s.q)}>{ask(c.t)}</span>
         <span class={s.meta}>
           <span class={s.nowrap}>
-            <strong style={{ color: c.p >= 0.5 ? 'var(--danger)' : 'var(--text)' }}>{c.label}</strong> de chance
+            <strong style={{ color: c.p >= 0.5 ? 'var(--danger)' : 'var(--text)' }}>{c.label}</strong> de
+            chance
           </span>{' '}
           <span class={s.nowrap}>
             · {c.pos}º · {c.pts} pts

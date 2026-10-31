@@ -46,7 +46,12 @@ export async function getData(env: Env, ctx: ExecutionContext): Promise<Response
 
 // Só o que a página usa: deixa a resposta ~10x menor que a da API.
 export function slim(raw: FdResponse): DataPayload {
-  const team = (t: FdTeam): SlimTeam => ({ id: t.id, name: t.shortName || t.name, tla: t.tla, crest: t.crest });
+  const team = (t: FdTeam): SlimTeam => ({
+    id: t.id,
+    name: t.shortName || t.name,
+    tla: t.tla,
+    crest: t.crest,
+  });
   return {
     fetchedAt: Date.now(),
     matches: raw.matches.map((m) => ({

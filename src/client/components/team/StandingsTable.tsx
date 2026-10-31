@@ -20,7 +20,12 @@ interface Props {
 
 const PRE_LIBERTADORES = 'color-mix(in srgb, var(--accent) 45%, #06223a)';
 
-function rows(res: SimulationResult, real: SimulationResult | null, gid: number | null, isSim: boolean): RowView[] {
+function rows(
+  res: SimulationResult,
+  real: SimulationResult | null,
+  gid: number | null,
+  isSim: boolean,
+): RowView[] {
   const realPos: Record<number, number> = {};
   real?.table.forEach((t, i) => (realPos[t.id] = i + 1));
   const n = res.table.length;

@@ -34,7 +34,10 @@ export function TeamPage({ slug }: { slug: TeamSlug }) {
 
   const gid = P?.gid ?? null;
   const real = useMemo(() => (P ? simulate(P, {}) : null), [P]);
-  const res = useMemo(() => (!P ? null : isSim ? simulate(P, predictions) : real), [P, isSim, predictions, real]);
+  const res = useMemo(
+    () => (!P ? null : isSim ? simulate(P, predictions) : real),
+    [P, isSim, predictions, real],
+  );
   const { pin, bandOut } = usePinnedBar(heroRef, rootRef, gid, mobile);
 
   const v = res && gid ? verdict(res, gid) : null;
@@ -51,7 +54,13 @@ export function TeamPage({ slug }: { slug: TeamSlug }) {
   };
 
   return (
-    <div ref={rootRef} data-theme="dark" data-font="archivo" class={ty.page} style={{ '--accent': team.accent }}>
+    <div
+      ref={rootRef}
+      data-theme="dark"
+      data-font="archivo"
+      class={ty.page}
+      style={{ '--accent': team.accent }}
+    >
       <StatusBar
         dot={st.dot}
         text={!(mobile && isSim && bandOut) && st.text}

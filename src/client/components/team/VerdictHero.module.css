@@ -41,7 +41,11 @@
 }
 
 .glowSafe {
-  background: radial-gradient(ellipse 70% 55% at 50% 62%, color-mix(in srgb, var(--safe) 16%, transparent), transparent 70%);
+  background: radial-gradient(
+    ellipse 70% 55% at 50% 62%,
+    color-mix(in srgb, var(--safe) 16%, transparent),
+    transparent 70%
+  );
 }
 
 .on {

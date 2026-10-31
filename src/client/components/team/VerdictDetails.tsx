@@ -20,10 +20,7 @@ export function VerdictDetails({ team, v, isSim, failed, notFound }: Props) {
   return (
     <>
       {v?.badge && (
-        <div
-          class={s.badge}
-          style={{ '--badge': v.badge === 'REBAIXADO' ? 'var(--danger)' : 'var(--safe)' }}
-        >
+        <div class={s.badge} style={{ '--badge': v.badge === 'REBAIXADO' ? 'var(--danger)' : 'var(--safe)' }}>
           {v.badge}
         </div>
       )}

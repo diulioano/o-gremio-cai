@@ -26,6 +26,10 @@ export default tseslint.config(
     languageOptions: { parserOptions: { projectService: true, tsconfigRootDir: import.meta.dirname } },
     rules: {
       '@typescript-eslint/restrict-template-expressions': ['error', { allowNumber: true }],
+      // '' cai no valor de reserva de propósito (sigla vazia, shortName vazio, escudo vazio)
+      '@typescript-eslint/prefer-nullish-coalescing': ['error', { ignorePrimitives: { string: true } }],
+      // conflita com no-non-null-assertion (strict): preferimos `as T` explícito a `!`
+      '@typescript-eslint/non-nullable-type-assertion-style': 'off',
     },
   },
   {

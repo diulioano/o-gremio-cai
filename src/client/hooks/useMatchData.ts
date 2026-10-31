@@ -8,7 +8,7 @@ import { loadCachedData, saveCachedData } from '../lib/storage';
 export function useMatchData(team: Team | null) {
   const [raw, setRaw] = useState<DataPayload | null>(null);
   const [err, setErr] = useState(false);
-  const [now, setNow] = useState(Date.now());
+  const [now, setNow] = useState(() => Date.now());
   useEffect(() => {
     fetch('/api/data')
       .then((r) => r.json() as Promise<DataPayload | DataError>)

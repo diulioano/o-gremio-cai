@@ -22,8 +22,7 @@
   background: var(--surface-2);
   color: var(--text);
   text-align: center;
-  font:
-    800 1.1rem var(--body);
+  font: 800 1.1rem var(--body);
   font-variant-numeric: tabular-nums;
   -moz-appearance: textfield;
   appearance: textfield;

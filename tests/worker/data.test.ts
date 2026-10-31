@@ -30,7 +30,10 @@ function fakeEnv(token: string, cached?: DataPayload) {
   return { env: { FOOTBALL_DATA_TOKEN: token, CACHE } as unknown as Env, store };
 }
 const waits: Promise<unknown>[] = [];
-const ctx = { waitUntil: (p: Promise<unknown>) => waits.push(p), passThroughOnException: () => undefined } as unknown as ExecutionContext;
+const ctx = {
+  waitUntil: (p: Promise<unknown>) => waits.push(p),
+  passThroughOnException: () => undefined,
+} as unknown as ExecutionContext;
 
 afterEach(() => {
   vi.restoreAllMocks();
