@@ -1,0 +1,24 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "o-gremio-cai",
+  "main": "src/index.js",
+  "compatibility_date": "2025-10-01",
+  "routes": [
+    { "pattern": "vaicair.diuliano.com", "custom_domain": true },
+    // subdomínios antigos, já compartilhados: o Worker redireciona para vaicair.diuliano.com/<time>
+    { "pattern": "o-gremio-cai.diuliano.com", "custom_domain": true },
+    { "pattern": "o-inter-cai.diuliano.com", "custom_domain": true },
+    { "pattern": "o-corinthians-cai.diuliano.com", "custom_domain": true },
+    { "pattern": "o-vasco-cai.diuliano.com", "custom_domain": true }
+  ],
+  "workers_dev": true,
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    // páginas (caminhos sem extensão: /, /inter, /api/data) passam pelo Worker; arquivos (.js, .svg) vão direto
+    "run_worker_first": ["/*", "!/*.*"]
+  },
+  "kv_namespaces": [
+    { "binding": "CACHE" }
+  ]
+}
