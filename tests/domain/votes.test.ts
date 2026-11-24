@@ -92,10 +92,10 @@ describe('crowdResult', () => {
     expect(r.rows.find((x) => x.id === gremio.id)).toEqual({ id: gremio.id, votes: 150, pct: 75 });
   });
 
-  it('sempre os 6 times, os sem voto com 0%, do mais votado para o menos', () => {
+  it('sempre os 8 times, os sem voto com 0%, do mais votado para o menos', () => {
     const r = crowdResult({ [vasco.id]: 30, [gremio.id]: 50, [inter.id]: 10 }, 50);
     if (!('rows' in r)) throw new Error('esperava rows');
-    expect(r.rows).toHaveLength(6);
+    expect(r.rows).toHaveLength(8);
     expect(r.rows.slice(0, 3).map((x) => x.id)).toEqual([gremio.id, vasco.id, inter.id]);
     expect(r.rows.at(-1)?.pct).toBe(0);
   });

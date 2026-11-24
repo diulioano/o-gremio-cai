@@ -52,10 +52,10 @@ describe('verdict', () => {
 });
 
 describe('homeCards', () => {
-  it('os 6 times, do mais ameaçado para o menos', () => {
+  it('os 8 times, do mais ameaçado para o menos', () => {
     const P = prepare(demo as DataPayload, null);
     const cards = homeCards(P, simulate(P, {}));
-    expect(cards).toHaveLength(6);
+    expect(cards).toHaveLength(8);
     expect(cards).toEqual([...cards].sort((x, y) => y.p - x.p || y.pos - x.pos));
     for (const c of cards) expect(c.yes).toBe(c.pos > 16);
   });

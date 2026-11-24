@@ -245,7 +245,7 @@ describe('GET /api/votes', () => {
     const voter = await seed(12);
     const s = await (await votes(get(voter), envClosing())).json<VoteState>();
     expect(s.mine).toEqual(PICKS);
-    expect(s.rows).toHaveLength(6);
+    expect(s.rows).toHaveLength(8);
     expect(s.rows?.[0]?.pct).toBe(100);
   });
 
@@ -260,7 +260,7 @@ describe('GET /api/votes', () => {
     await seed(12);
     const s = await (await votes(get(), envClosing(Date.now() - 1000))).json<VoteState>();
     expect(s.open).toBe(false);
-    expect(s.rows).toHaveLength(6);
+    expect(s.rows).toHaveLength(8);
     expect(s.mine).toBeUndefined();
   });
 
