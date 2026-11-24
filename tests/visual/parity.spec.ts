@@ -11,18 +11,7 @@ const crest = Buffer.from(
 // estado fixo da votação (specs/003-votacao-rebaixados): aberta, fecha em 2026-12-01, quem abre ainda não votou
 const votes = { open: true, closesAt: Date.parse('2026-12-02T00:00:00Z'), total: 1284 };
 
-const PAGES = [
-  '',
-  'gremio',
-  'inter',
-  'corinthians',
-  'vasco',
-  'botafogo',
-  'coritiba',
-  'vitoria',
-  'mirassol',
-  'remo',
-];
+const PAGES = ['', 'gremio', 'inter', 'corinthians', 'botafogo', 'mirassol', 'remo'];
 const STATES = { real: null, palpites } as const;
 
 async function setup(page: Page, pal: string | null) {

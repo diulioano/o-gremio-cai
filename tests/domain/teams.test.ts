@@ -46,7 +46,7 @@ describe('TEAMS', () => {
     expect(existsSync(`public/${slug}.svg`)).toBe(true);
   });
 
-  it('isTeamSlug só aceita os 9 times', () => {
+  it('isTeamSlug só aceita os 6 times', () => {
     expect(isTeamSlug('inter')).toBe(true);
     expect(isTeamSlug('flamengo')).toBe(false);
     expect(isTeamSlug('toString')).toBe(false);

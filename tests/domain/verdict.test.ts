@@ -52,11 +52,20 @@ describe('verdict', () => {
 });
 
 describe('homeCards', () => {
-  it('os 9 times, do mais ameaçado para o menos', () => {
+  it('os 6 times, do mais ameaçado para o menos', () => {
     const P = prepare(demo as DataPayload, null);
     const cards = homeCards(P, simulate(P, {}));
-    expect(cards).toHaveLength(9);
+    expect(cards).toHaveLength(6);
     expect(cards).toEqual([...cards].sort((x, y) => y.p - x.p || y.pos - x.pos));
     for (const c of cards) expect(c.yes).toBe(c.pos > 16);
+  });
+
+  it('fell é verdadeiro só para quem está rebaixado matematicamente', () => {
+    const P = prepare(demo as DataPayload, null);
+    const res = simulate(P, {});
+    for (const c of homeCards(P, res)) {
+      const id = res.table.find((t) => t.name === c.t.name)?.id;
+      if (id !== undefined) expect(c.fell).toBe(res.dec[id] === 'reb');
+    }
   });
 });

@@ -59,7 +59,7 @@ describe('prepare', () => {
   it('acha o time pelo id e, na falta, pela sigla (dados demo têm ids inventados)', () => {
     const d = demo as DataPayload;
     expect(prepare(d, TEAMS.gremio).gid).toBe(TEAMS.gremio.id);
-    expect(prepare(d, TEAMS.coritiba).gid).toBe(90002);
+    expect(prepare(d, TEAMS.mirassol).gid).toBe(90001);
     expect(prepare(d, null).gid).toBeNull();
   });
 

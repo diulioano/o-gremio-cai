@@ -68,6 +68,8 @@ export interface HomeCard {
   yes: boolean;
   p: number;
   label: string;
+  /** rebaixado matematicamente (já caiu, com jogos ainda por fazer ou não) */
+  fell: boolean;
 }
 
 /** Cartões da página inicial, do mais ameaçado para o menos (sempre pela tabela real). */
@@ -87,6 +89,7 @@ export function homeCards(P: Prepared, res: SimulationResult): HomeCard[] {
       yes: pos > n - 4,
       p,
       label: pctLabel(p, res.dec[gid] ?? null),
+      fell: res.dec[gid] === 'reb',
     });
   }
   return cards.sort((a, b) => b.p - a.p || b.pos - a.pos);

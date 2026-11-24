@@ -9,7 +9,7 @@ import { votes } from '../../src/worker/votes';
 
 const URL_ = 'https://vaicair.diuliano.com/api/votes';
 const DAY = 24 * 3600_000;
-const { gremio, inter, vasco, remo, mirassol } = TEAMS;
+const { gremio, inter, corinthians: vasco, remo, mirassol } = TEAMS;
 const PICKS = [gremio.id, inter.id, vasco.id];
 
 let ipSeq = 0;
@@ -106,7 +106,7 @@ describe('POST /api/votes', () => {
 
   it('com 10 votos, quem votou recebe as porcentagens', async () => {
     for (let i = 0; i < 9; i++) await votes(post({ voter: uuid(), picks: PICKS }), envClosing());
-    const r = await votes(post({ voter: uuid(), picks: [remo.id, gremio.id, vasco.id] }), envClosing());
+    const r = await votes(post({ voter: uuid(), picks: [remo.id, gremio.id, mirassol.id] }), envClosing());
     const s = await r.json<VoteState>();
     expect(s.total).toBe(10);
     expect(s.rows?.[0]).toEqual({ id: gremio.id, votes: 10, pct: 100 });
@@ -245,7 +245,7 @@ describe('GET /api/votes', () => {
     const voter = await seed(12);
     const s = await (await votes(get(voter), envClosing())).json<VoteState>();
     expect(s.mine).toEqual(PICKS);
-    expect(s.rows).toHaveLength(9);
+    expect(s.rows).toHaveLength(6);
     expect(s.rows?.[0]?.pct).toBe(100);
   });
 
@@ -260,7 +260,7 @@ describe('GET /api/votes', () => {
     await seed(12);
     const s = await (await votes(get(), envClosing(Date.now() - 1000))).json<VoteState>();
     expect(s.open).toBe(false);
-    expect(s.rows).toHaveLength(9);
+    expect(s.rows).toHaveLength(6);
     expect(s.mine).toBeUndefined();
   });
 
