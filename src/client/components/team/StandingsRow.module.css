@@ -78,6 +78,46 @@
   white-space: nowrap;
 }
 
+.livePill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  line-height: 1.35;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.liveDot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+}
+
+.liveWin {
+  background: color-mix(in srgb, var(--safe) 20%, var(--surface-2));
+  color: var(--safe);
+  border: 1px solid color-mix(in srgb, var(--safe) 40%, transparent);
+}
+
+.liveLoss {
+  background: color-mix(in srgb, var(--danger) 20%, var(--surface-2));
+  color: var(--danger);
+  border: 1px solid color-mix(in srgb, var(--danger) 40%, transparent);
+}
+
+.liveDraw {
+  background: var(--surface-2);
+  color: var(--text-muted);
+  border: 1px solid var(--line);
+}
+
 .pts {
   text-align: center;
   font-weight: 800;

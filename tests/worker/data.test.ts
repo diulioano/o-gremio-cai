@@ -113,12 +113,12 @@ describe('getData', () => {
     expect(await (await getData(fakeEnv('t', old).env, ctx)).json()).toEqual({ ...old, stale: true });
   });
 
-  it('cache-control: 30 s com jogo ao vivo, 300 s fora', async () => {
+  it('cache-control: 10 s com jogo ao vivo, 300 s fora', async () => {
     const live = { fetchedAt: Date.now(), matches: [liveMatch()] };
     const idle = { fetchedAt: Date.now(), matches: [] };
     const rl = await getData(fakeEnv('t', live).env, ctx);
     const ri = await getData(fakeEnv('t', idle).env, ctx);
-    expect(rl.headers.get('cache-control')).toBe('public, max-age=30');
+    expect(rl.headers.get('cache-control')).toBe('public, max-age=10');
     expect(ri.headers.get('cache-control')).toBe('public, max-age=300');
   });
 
@@ -153,5 +153,45 @@ describe('slim', () => {
       hs: 2,
       as: 1,
     });
+  });
+
+  it('ao vivo: prioriza fullTime, usa halfTime como fallback quando fullTime é null e preserva null se ambos faltarem', () => {
+    const base = fd.matches[0];
+    if (!base) throw new Error('missing fixture match');
+    const raw: FdResponse = {
+      matches: [
+        {
+          ...base,
+          id: 10,
+          status: 'IN_PLAY',
+          score: { fullTime: { home: 1, away: 0 }, halfTime: { home: 0, away: 0 } },
+        },
+        {
+          ...base,
+          id: 11,
+          status: 'PAUSED',
+          score: { fullTime: { home: null, away: null }, halfTime: { home: 2, away: 1 } },
+        },
+        {
+          ...base,
+          id: 12,
+          status: 'IN_PLAY',
+          score: { fullTime: { home: null, away: null }, halfTime: { home: null, away: null } },
+        },
+        {
+          ...base,
+          id: 13,
+          status: 'TIMED',
+          score: { fullTime: { home: null, away: null }, halfTime: { home: 1, away: 0 } },
+        },
+      ],
+    };
+    const out = slim(raw).matches;
+    expect(out.map((m) => [m.id, m.hs, m.as])).toEqual([
+      [10, 1, 0],
+      [11, 2, 1],
+      [12, null, null],
+      [13, null, null],
+    ]);
   });
 });

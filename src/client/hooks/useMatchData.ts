@@ -10,20 +10,25 @@ const shouldPoll = (d: DataPayload | null) =>
   !!d && document.visibilityState === 'visible' && isLiveWindow(d.matches, Date.now());
 
 /** Dados da API (com cópia no localStorage para quando cair a conexão) e um relógio de minuto em minuto. */
-export function useMatchData(team: Team | null) {
+export function useMatchData(team: Team | null, onBeforeUpdate?: () => void) {
   const [raw, setRaw] = useState<DataPayload | null>(null);
   const [err, setErr] = useState(false);
   const [now, setNow] = useState(() => Date.now());
   // o intervalo e o listener leem os dados mais recentes por aqui, sem recriar o efeito
   const rawRef = useRef<DataPayload | null>(null);
+  const beforeRef = useRef(onBeforeUpdate);
+  useEffect(() => {
+    beforeRef.current = onBeforeUpdate;
+  }, [onBeforeUpdate]);
 
   useEffect(() => {
     const show = (d: DataPayload) => {
+      if (rawRef.current) beforeRef.current?.();
       rawRef.current = d;
       setRaw(d);
     };
     const load = () => {
-      fetch('/api/data')
+      fetch('/api/data', { cache: 'no-cache' })
         .then((r) => r.json() as Promise<DataPayload | DataError>)
         .then((d) => {
           if (!('matches' in d)) throw new Error('error' in d ? d.error : 'sem dados');

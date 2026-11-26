@@ -9,7 +9,7 @@ import { row } from './helpers';
 /** 20 times; pontos de cima para baixo; o id é a posição. */
 function result(pts: number[], dec: SimulationResult['dec'] = {}, final = false): SimulationResult {
   const table = pts.map((p, i) => row(i + 1, { pts: p }));
-  return { table, pct: Object.fromEntries(table.map((t) => [t.id, t.id / 40])), dec, final };
+  return { table, pct: Object.fromEntries(table.map((t) => [t.id, t.id / 40])), dec, final, live: {} };
 }
 const pts = (over: Record<number, number>) => Array.from({ length: 20 }, (_, i) => over[i + 1] ?? 60 - i * 2);
 

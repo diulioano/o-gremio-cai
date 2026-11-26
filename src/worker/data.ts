@@ -25,7 +25,10 @@ export interface FdResponse {
     utcDate: string;
     homeTeam: FdTeam;
     awayTeam: FdTeam;
-    score?: { fullTime?: { home: number | null; away: number | null } };
+    score?: {
+      fullTime?: { home: number | null; away: number | null };
+      halfTime?: { home: number | null; away: number | null };
+    };
   }[];
 }
 
@@ -57,6 +60,8 @@ export async function fetchSource(token: string): Promise<DataPayload> {
   return slim(await r.json<FdResponse>());
 }
 
+const LIVE_STATUSES = new Set(['IN_PLAY', 'PAUSED', 'LIVE']);
+
 // Só o que a página usa: deixa a resposta ~10x menor que a da API.
 export function slim(raw: FdResponse): DataPayload {
   const team = (t: FdTeam): SlimTeam => ({
@@ -67,16 +72,25 @@ export function slim(raw: FdResponse): DataPayload {
   });
   return {
     fetchedAt: Date.now(),
-    matches: raw.matches.map((m) => ({
-      id: m.id,
-      md: m.matchday,
-      status: m.status,
-      utc: m.utcDate,
-      h: team(m.homeTeam),
-      a: team(m.awayTeam),
-      hs: m.score?.fullTime?.home ?? null,
-      as: m.score?.fullTime?.away ?? null,
-    })),
+    matches: raw.matches.map((m) => {
+      const ft = m.score?.fullTime;
+      const ht = m.score?.halfTime;
+      const useHt =
+        LIVE_STATUSES.has(m.status) &&
+        (ft?.home == null || ft.away == null) &&
+        ht?.home != null &&
+        ht.away != null;
+      return {
+        id: m.id,
+        md: m.matchday,
+        status: m.status,
+        utc: m.utcDate,
+        h: team(m.homeTeam),
+        a: team(m.awayTeam),
+        hs: useHt ? ht.home : (ft?.home ?? null),
+        as: useHt ? ht.away : (ft?.away ?? null),
+      };
+    }),
   };
 }
 
@@ -89,13 +103,13 @@ export function withFixes(d: DataPayload): DataPayload {
   return { ...d, matches: d.matches.map((m) => ({ ...m, h: fix(m.h), a: fix(m.a) })) };
 }
 
-// Durante jogo o navegador guarda a resposta só 30 s, para a busca de minuto em minuto da página ver dados novos.
+// Durante jogo o cache HTTP é curto (10 s) para o polling da página ver gols e fim de jogo sem atraso extra.
 function json(body: DataPayload | DataError, status = 200, live = false): Response {
   return new Response(JSON.stringify('matches' in body ? withFixes(body) : body), {
     status,
     headers: {
       'content-type': 'application/json; charset=utf-8',
-      'cache-control': `public, max-age=${live ? 30 : 300}`,
+      'cache-control': `public, max-age=${live ? 10 : 300}`,
     },
   });
 }

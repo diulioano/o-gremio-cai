@@ -1,6 +1,6 @@
 // "Tem jogo ao vivo?" e os prazos de frescor dos dados. O cron do Worker e a página usam a mesma regra.
 // Ver specs/002-atualizacao-por-minuto/data-model.md.
-import type { SlimMatch } from '../shared/api';
+import type { DataPayload, SlimMatch } from '../shared/api';
 
 const MIN = 60_000;
 /** a janela ao vivo abre 15 min antes do horário marcado */
@@ -26,4 +26,19 @@ export function isLiveWindow(matches: readonly SlimMatch[], now: number): boolea
     const t = Date.parse(m.utc);
     return t - LIVE_LEAD_MS <= now && now <= t + LIVE_TAIL_MS;
   });
+}
+
+/** Retorna os ids dos times que marcaram gol em jogos ao vivo entre dois payloads consecutivos. */
+export function detectGoalTeams(prev: DataPayload | null, next: DataPayload | null): number[] {
+  if (!prev || !next) return [];
+  const before = new Map(prev.matches.map((m) => [m.id, m]));
+  const scorers: number[] = [];
+  for (const m of next.matches) {
+    if (!PLAYING.has(m.status) || m.hs == null || m.as == null) continue;
+    const old = before.get(m.id);
+    if (old?.hs == null || old.as == null) continue;
+    if (m.hs > old.hs && m.h.id != null) scorers.push(m.h.id);
+    if (m.as > old.as && m.a.id != null) scorers.push(m.a.id);
+  }
+  return scorers;
 }

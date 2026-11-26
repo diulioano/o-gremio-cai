@@ -16,6 +16,8 @@ interface Props {
   isSim: boolean;
   failed: boolean;
   mobile: boolean;
+  /** times que acabaram de marcar gol no polling ao vivo */
+  goalTeams?: ReadonlySet<number>;
 }
 
 const PRE_LIBERTADORES = 'color-mix(in srgb, var(--accent) 45%, #06223a)';
@@ -25,6 +27,7 @@ function rows(
   real: SimulationResult | null,
   gid: number | null,
   isSim: boolean,
+  goalTeams?: ReadonlySet<number>,
 ): RowView[] {
   const realPos: Record<number, number> = {};
   real?.table.forEach((t, i) => (realPos[t.id] = i + 1));
@@ -41,6 +44,8 @@ function rows(
       self,
       z4Label: pos === n - 3,
       delta: isSim && dlt ? dlt : null,
+      live: res.live[t.id] ?? null,
+      goal: !!goalTeams?.has(t.id),
       zone: pos <= 4 ? 'var(--accent)' : pos <= 6 ? PRE_LIBERTADORES : z4 ? 'var(--danger)' : 'transparent',
       bg: self
         ? 'color-mix(in srgb, var(--accent) 12%, var(--surface))'
@@ -63,12 +68,25 @@ function rows(
 }
 
 /** Classificação completa, com a faixa da zona, a % de queda e as setas do modo simulação. */
-export function StandingsTable({ res, real, gid, isSim, failed, mobile }: Props) {
+export function StandingsTable({ res, real, gid, isSim, failed, mobile, goalTeams }: Props) {
+  const hasLive = !!res && Object.keys(res.live).length > 0;
+  const note = isSim
+    ? hasLive
+      ? 'Tabela simulada · ao vivo'
+      : 'Tabela simulada'
+    : hasLive
+      ? 'Tabela ao vivo'
+      : 'Tabela atual';
   return (
     <section id="classificacao" class={cx(s.section, mobile && s.mobile)}>
       <div class={ty.sectionHeader}>
         <h2 class={cx(ty.h2, mobile && ty.h2Mobile)}>Classificação</h2>
-        <span class={ty.note}>{isSim ? 'Tabela simulada' : 'Tabela atual'}</span>
+        <span class={cx(ty.note, hasLive && s.liveNote)}>
+          {hasLive && (
+            <span class={s.liveDot} style={{ animation: 'livedot 1.2s ease-in-out infinite' }}></span>
+          )}
+          {note}
+        </span>
       </div>
       <div role="table" aria-label="Classificação do campeonato" class={s.table}>
         <div role="row" class={cx(rs.grid, mobile && rs.mobile, s.head)}>
@@ -100,7 +118,9 @@ export function StandingsTable({ res, real, gid, isSim, failed, mobile }: Props)
             ))}
           </div>
         ) : (
-          rows(res, real, gid, isSim).map((r) => <StandingsRow key={r.t.id} r={r} mobile={mobile} />)
+          rows(res, real, gid, isSim, goalTeams).map((r) => (
+            <StandingsRow key={r.t.id} r={r} mobile={mobile} />
+          ))
         )}
       </div>
       <div class={s.legend}>

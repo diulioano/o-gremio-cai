@@ -11,30 +11,66 @@ const add = (arr: Int32Array | Float64Array, i: number, d: number) => {
 
 export type Decision = 'salvo' | 'reb' | null;
 
+export interface LiveScore {
+  /** gols do time no jogo em andamento */
+  gf: number;
+  /** gols do adversário no jogo em andamento */
+  ga: number;
+}
+
 export interface SimulationResult {
   table: StandingRow[];
   /** chance de cair, de 0 a 1 */
   pct: Record<number, number>;
   /** decidido matematicamente: salvo, rebaixado ou ainda em aberto */
   dec: Record<number, Decision>;
-  /** sem jogos para sortear (fim do campeonato ou tudo palpitado): a tabela exibida é a final */
+  /** sem jogos para sortear nem jogos ao vivo (fim do campeonato ou tudo palpitado): a tabela exibida é a final */
   final: boolean;
+  /** placar ao vivo sob a perspectiva de cada time que está em campo com placar válido */
+  live: Record<number, LiveScore>;
 }
 
-/** Tabela com os palpites aplicados (só em jogos futuros) e os jogos que sobram para sortear. */
+/**
+ * Tabela exibida (encerrados + jogos ao vivo com placar válido + palpites em jogos futuros)
+ * separada da base consolidada (encerrados + palpites), usada para decisão matemática (decide/final).
+ */
 export function computeTable(P: Prepared, pal: Predictions) {
   const st: Record<number, StandingRow> = {};
-  for (const id of P.ids) st[id] = { ...(P.base[id] as StandingRow) };
+  const mathSt: Record<number, StandingRow> = {};
+  for (const id of P.ids) {
+    st[id] = { ...(P.base[id] as StandingRow) };
+    mathSt[id] = { ...(P.base[id] as StandingRow) };
+  }
   const row = (id: number) => st[id] as StandingRow;
+  const mathRow = (id: number) => mathSt[id] as StandingRow;
   const rem: Match[] = [];
+  const mathRem: Match[] = [];
+  const live: Record<number, LiveScore> = {};
   for (const g of P.matches) {
     if (g.status === 'fin') continue;
-    const p = g.status === 'fut' ? pal[String(g.id)] : undefined;
-    if (p) play(row(g.home), row(g.away), p.h, p.a);
-    else rem.push(g);
+    if (g.status === 'live') {
+      // jogo em andamento segue em aberto para a decisão matemática (nunca dispara SALVO/REBAIXADO/CAIU antes do apito final)
+      mathRem.push(g);
+      if (g.homeGoals != null && g.awayGoals != null) {
+        play(row(g.home), row(g.away), g.homeGoals, g.awayGoals);
+        live[g.home] = { gf: g.homeGoals, ga: g.awayGoals };
+        live[g.away] = { gf: g.awayGoals, ga: g.homeGoals };
+      } else {
+        rem.push(g);
+      }
+      continue;
+    }
+    const p = pal[String(g.id)];
+    if (p) {
+      play(row(g.home), row(g.away), p.h, p.a);
+      play(mathRow(g.home), mathRow(g.away), p.h, p.a);
+    } else {
+      rem.push(g);
+      mathRem.push(g);
+    }
   }
   const table = P.ids.map(row).sort(compareStandings);
-  return { row, table, rem };
+  return { row, mathRow, table, rem, mathRem, live };
 }
 
 /** Salvo se não há times suficientes capazes de alcançá-lo; rebaixado se já há times suficientes
@@ -58,7 +94,7 @@ export function decide(i: number, pts0: Int32Array, left: Int32Array, cut: numbe
  */
 export function simulate(P: Prepared, pal: Predictions, rng: () => number = mulberry(42)): SimulationResult {
   const { ids } = P;
-  const { row, table, rem } = computeTable(P, pal);
+  const { row, mathRow, table, rem, mathRem, live } = computeTable(P, pal);
   const n = ids.length;
   const idx = new Map(ids.map((id, i) => [id, i]));
   const at = (id: number) => idx.get(id) ?? 0;
@@ -66,12 +102,15 @@ export function simulate(P: Prepared, pal: Predictions, rng: () => number = mulb
     v0 = Int32Array.from(ids, (id) => row(id).v);
   const sg0 = Int32Array.from(ids, (id) => row(id).sg),
     gp0 = Int32Array.from(ids, (id) => row(id).gp);
-  const left = new Int32Array(n);
+  const mathPts0 = Int32Array.from(ids, (id) => mathRow(id).pts);
+  const mathLeft = new Int32Array(n);
+  for (const g of mathRem) {
+    add(mathLeft, at(g.home), 1);
+    add(mathLeft, at(g.away), 1);
+  }
   const games = rem.map((g) => {
     const h = at(g.home),
       a = at(g.away);
-    add(left, h, 1);
-    add(left, a, 1);
     const [lh, la] = P.lambda(g.home, g.away);
     return [h, a, Math.exp(-lh), Math.exp(-la)] as const;
   });
@@ -79,14 +118,20 @@ export function simulate(P: Prepared, pal: Predictions, rng: () => number = mulb
   const pct: Record<number, number> = {},
     dec: Record<number, Decision> = {};
 
-  // sem jogos restantes (fim do campeonato ou tudo palpitado), a posição final decide, inclusive no desempate
+  // sem jogos restantes para sortear: se não há jogos ao vivo, a posição final decide; com jogo ao vivo, dec usa só a base consolidada
   if (!rem.length) {
+    const isFinal = !mathRem.length;
     table.forEach((t, k) => {
       const out = k >= cut;
       pct[t.id] = out ? 1 : 0;
-      dec[t.id] = out ? 'reb' : 'salvo';
+      if (isFinal) dec[t.id] = out ? 'reb' : 'salvo';
     });
-    return { table, pct, dec, final: true };
+    if (!isFinal) {
+      ids.forEach((id, i) => {
+        dec[id] = decide(i, mathPts0, mathLeft, cut);
+      });
+    }
+    return { table, pct, dec, final: isFinal, live };
   }
 
   const rel = new Float64Array(n);
@@ -138,7 +183,7 @@ export function simulate(P: Prepared, pal: Predictions, rng: () => number = mulb
 
   ids.forEach((id, i) => {
     pct[id] = (rel[i] as number) / N_SIM;
-    dec[id] = decide(i, pts0, left, cut);
+    dec[id] = decide(i, mathPts0, mathLeft, cut);
   });
-  return { table, pct, dec, final: false };
+  return { table, pct, dec, final: false, live };
 }

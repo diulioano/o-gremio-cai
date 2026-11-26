@@ -1,4 +1,5 @@
 import { signed } from '../../../domain/format';
+import type { LiveScore } from '../../../domain/simulate';
 import type { StandingRow as Row } from '../../../domain/standings';
 import { cx } from '../../lib/cx';
 import { Crest } from '../common/Crest';
@@ -13,12 +14,21 @@ export interface RowView {
   z4Label: boolean;
   /** posições ganhas (+) ou perdidas (−) em relação à tabela real; só aparece no modo simulação */
   delta: number | null;
+  /** placar parcial do jogo ao vivo sob a perspectiva deste time */
+  live: LiveScore | null;
+  /** acabou de marcar gol no polling ao vivo */
+  goal: boolean;
   zone: string;
   bg: string;
   borderTop: string;
   pct: string;
   pctWidth: string;
   pctColor: string;
+}
+
+function liveLabel(l: LiveScore): string {
+  const state = l.gf > l.ga ? 'vencendo' : l.gf < l.ga ? 'perdendo' : 'empatando';
+  return `Ao vivo: ${state} por ${l.gf} a ${l.ga}`;
 }
 
 interface Props {
@@ -28,6 +38,13 @@ interface Props {
 
 export function StandingsRow({ r, mobile }: Props) {
   const { t } = r;
+  const liveTone = r.live
+    ? r.live.gf > r.live.ga
+      ? s.liveWin
+      : r.live.gf < r.live.ga
+        ? s.liveLoss
+        : s.liveDraw
+    : null;
   return (
     <div
       role="row"
@@ -38,6 +55,7 @@ export function StandingsRow({ r, mobile }: Props) {
         background: r.bg,
         borderTop: r.borderTop,
         boxShadow: r.self ? 'inset 0 0 0 2px var(--accent)' : 'none',
+        animation: r.goal ? 'goalflash 2.4s ease-out' : undefined,
       }}
     >
       <div class={s.posCell}>
@@ -47,6 +65,12 @@ export function StandingsRow({ r, mobile }: Props) {
       <div class={s.club}>
         <Crest team={t} size={mobile ? '22px' : '28px'} />
         <span class={s.name}>{t.name}</span>
+        {r.live && (
+          <span aria-label={liveLabel(r.live)} class={cx(s.livePill, liveTone)}>
+            <span class={s.liveDot} style={{ animation: 'livedot 1.2s ease-in-out infinite' }}></span>
+            {r.live.gf}-{r.live.ga}
+          </span>
+        )}
         {r.delta ? (
           <span
             aria-label={r.delta > 0 ? `subiu ${r.delta}` : `caiu ${-r.delta}`}

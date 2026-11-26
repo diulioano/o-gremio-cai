@@ -25,6 +25,7 @@ export function HomePage() {
   const { width, mobile } = useViewport();
   const vote = useVote();
   const real = useMemo(() => (P ? simulate(P, {}) : null), [P]);
+  const hasLive = !!real && Object.keys(real.live).length > 0;
   const hasPal = Object.keys(loadPredictions()).length > 0;
   const cards = P && real ? homeCards(P, real) : [];
   const sims = cards.filter((c) => c.yes),
@@ -52,7 +53,15 @@ export function HomePage() {
         <div class={cx(ty.sectionHeader, s.header)}>
           <h2 class={cx(ty.h2, mobile && ty.h2Mobile)}>Na briga</h2>
           {raw && (
-            <span class={ty.note}>{hasPal ? 'Tabela real, sem os seus palpites' : 'Tabela atual'}</span>
+            <span class={ty.note}>
+              {hasPal
+                ? hasLive
+                  ? 'Tabela ao vivo, sem os seus palpites'
+                  : 'Tabela real, sem os seus palpites'
+                : hasLive
+                  ? 'Tabela ao vivo'
+                  : 'Tabela atual'}
+            </span>
           )}
         </div>
         {err && !raw ? (

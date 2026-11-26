@@ -3,6 +3,19 @@
   scroll-margin-top: 44px;
 }
 
+.liveNote {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.liveDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--danger);
+}
+
 .table {
   background: var(--surface);
   border: 1px solid var(--line);

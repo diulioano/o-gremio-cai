@@ -5,6 +5,7 @@ import { shareCard } from '../../../domain/share';
 import { verdict } from '../../../domain/verdict';
 import { TEAMS, type TeamSlug } from '../../../shared/teams';
 import { useFlipRows } from '../../hooks/useFlipRows';
+import { useLiveGoals } from '../../hooks/useLiveGoals';
 import { useMatchData } from '../../hooks/useMatchData';
 import { usePinnedBar } from '../../hooks/usePinnedBar';
 import { usePredictions } from '../../hooks/usePredictions';
@@ -33,9 +34,10 @@ export function TeamPage({ slug }: { slug: TeamSlug }) {
   const team = TEAMS[slug];
   const rootRef = useRef<HTMLDivElement>(null);
   const heroRef = useRef<HTMLElement>(null);
-  const { raw, err, now, P } = useMatchData(team);
-  const { width, mobile, wide } = useViewport();
   const captureRows = useFlipRows(rootRef);
+  const { raw, err, now, P } = useMatchData(team, captureRows);
+  const goalTeams = useLiveGoals(raw);
+  const { width, mobile, wide } = useViewport();
   const { predictions, isSim, actions } = usePredictions(captureRows);
   const [round, setRound] = useState<number | null>(null);
 
@@ -106,6 +108,7 @@ export function TeamPage({ slug }: { slug: TeamSlug }) {
           isSim={isSim}
           failed={failed}
           mobile={mobile}
+          goalTeams={goalTeams}
         />
         <MatchesPanel
           P={P}

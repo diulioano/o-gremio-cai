@@ -6,7 +6,7 @@ import { row } from './helpers';
 /** 20 times; pontos de cima para baixo; o id é a posição. */
 function result(dec: SimulationResult['dec'] = {}, final = false): SimulationResult {
   const table = Array.from({ length: 20 }, (_, i) => row(i + 1, { pts: 60 - i * 2 }));
-  return { table, pct: Object.fromEntries(table.map((t) => [t.id, t.id / 20])), dec, final };
+  return { table, pct: Object.fromEntries(table.map((t) => [t.id, t.id / 20])), dec, final, live: {} };
 }
 
 describe('shareCard', () => {
